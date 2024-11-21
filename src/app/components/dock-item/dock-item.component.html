@@ -1,0 +1,20 @@
+<div
+  class="dock-item"
+  [id]="'dock-item-' + index"
+  [style.width.rem]="sizeRem"
+  [style.--scale]="scale"
+  (click)="onClick()"
+  (mouseenter)="showTooltip()"
+  (mouseleave)="hideTooltip()"
+>
+  <div class="icon-wrapper">
+    <img
+      [src]="iconSrc"
+      [alt]="label"
+      draggable="false"
+      [style.transition-duration]="transitionDuration"
+    />
+  </div>
+  <div class="tooltip" [class.visible]="tooltipVisible">{{ label }}</div>
+  <div class="active-indicator" *ngIf="isActive"></div>
+</div>

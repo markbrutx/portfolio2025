@@ -1,0 +1,23 @@
+.dock-panel {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 4rem;
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.625rem 0.9375rem;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 0.9375rem;
+  user-select: none;
+  overflow: visible;
+}
+
+.divider {
+  width: 1px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  margin: 0 0.5rem;
+}
