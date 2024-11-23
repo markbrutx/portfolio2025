@@ -1,11 +1,21 @@
-# Portfolio2025
+# 🌟 Portfolio2025
 
-This is my personal portfolio website, built using Angular 19.
+Welcome to **Portfolio2025**, my personal portfolio website built with the power of **Angular 19**! 🚀
 
-# Features TODO Mini Roadmap:
+---
 
-[✓] Dock
-[✓] CV Download
-[] Quick View For About me
-[] Cursor as on Mac 
+## 🌟 Features & Roadmap
 
+### ✅ Completed
+- **Dock**: Interactive, macOS-style dock for navigation.
+- **CV Download**: Download my CV with a single click.
+
+### 🚧 In Progress
+- **Quick View for About Me**: A quick overview modal for my bio.
+
+### 📌 Upcoming
+- **Cursor as on Mac**: Add a macOS-like interactive cursor for improved UX.
+
+---
+
+Feel free to explore, provide feedback, or suggest features! 🎉
