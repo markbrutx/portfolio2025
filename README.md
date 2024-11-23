@@ -9,12 +9,14 @@ Welcome to **Portfolio2025**, my personal portfolio website built with the power
 ### ✅ Completed
 - **Dock**: Interactive, macOS-style dock for navigation.
 - **CV Download**: Download my CV with a single click.
+- **Cursor as on Mac**: Add a macOS-like interactive cursor for improved UX.
 
 ### 🚧 In Progress
-- **Quick View for About Me**: A quick overview modal for my bio.
+- **Quick View for About Me**: A quick overview modal for my bio, currently featuring application opening capabilities.
+- **Top Bar**: Implementation of a top navigation bar.
 
 ### 📌 Upcoming
-- **Cursor as on Mac**: Add a macOS-like interactive cursor for improved UX.
+- No new features planned yet.
 
 ---
 
