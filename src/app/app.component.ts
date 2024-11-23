@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import {DockPanelComponent} from './components/dock-panel/dock-panel.component';
+import {DesktopComponent} from './components/desktop/desktop.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, DockPanelComponent],
+  imports: [DockPanelComponent, DesktopComponent],
   templateUrl: './app.component.html',
   standalone: true,
   styleUrl: './app.component.scss'

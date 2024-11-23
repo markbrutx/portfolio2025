@@ -1,0 +1,22 @@
+<div
+  class="window-container"
+  [ngClass]="{ active: isActive, maximized: isMaximized }"
+  [ngStyle]="{
+    width: isMaximized ? '100%' : width + 'px',
+    height: isMaximized ? 'calc(100vh - 2rem)' : height + 'px',
+    transform: isMaximized ? 'none' : 'translate(' + position.x + 'px, ' + position.y + 'px)'
+  }"
+  #window
+>
+  <div class="window-header" (mousedown)="startDrag($event)">
+    <div class="traffic-lights">
+      <button class="close" (click)="closeWindow()"></button>
+      <button class="minimize" (click)="minimizeWindow()"></button>
+      <button class="maximize" (click)="toggleMaximize()"></button>
+    </div>
+  </div>
+  <div class="window-content">
+    <p>App ID: {{ appId }}</p>
+    <ng-content></ng-content>
+  </div>
+</div>

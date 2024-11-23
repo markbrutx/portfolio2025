@@ -9,24 +9,14 @@ import {
   PLATFORM_ID,
   ViewChild,
   ViewChildren,
-  QueryList,
+  QueryList, Output, EventEmitter,
 } from '@angular/core';
 import { DockItemComponent } from '../dock-item/dock-item.component';
 import { isPlatformBrowser, NgForOf, NgIf } from '@angular/common';
 import { fromEvent, Subscription } from 'rxjs';
 import {FileDownloadService} from '../../services/file-download.service';
+import {AppID} from '../../shared/app-id.enum';
 
-export enum AppID {
-  Home = 'home',
-  AboutMe = 'aboutMe',
-  CV = 'cv',
-  Experience = 'experience',
-  Projects = 'projects',
-  Skills = 'skills',
-  Education = 'education',
-  Youtube = 'youtube',
-  Contacts = 'contacts',
-}
 
 export interface DockItem {
   iconSrc: string;
@@ -47,6 +37,8 @@ export interface DockItem {
 export class DockPanelComponent implements AfterViewInit, OnDestroy {
   @ViewChild('dockPanel', { static: true }) dockPanel!: ElementRef;
   @ViewChildren('dockItem', { read: ElementRef }) dockItemElements!: QueryList<ElementRef>;
+  @Output() appOpened = new EventEmitter<AppID>();
+
 
   dockItems: DockItem[] = [
     { iconSrc: 'assets/icons/finder.png', label: 'Home', scale: 1, appId: AppID.Home },
@@ -85,46 +77,13 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
     this.mouseMoveSubscription?.unsubscribe();
   }
 
-  openApp(appId: AppID) {
-    switch (appId) {
-      case AppID.Home:
-        console.log('Opened application: Home');
-        // TODO: Add logic to navigate to Home
-        break;
-      case AppID.AboutMe:
-        console.log('Opened application: About Me');
-        // TODO: Add logic to navigate to About Me
-        break;
-      case AppID.CV:
-        console.log('Download  CV');
-        this.downloadCV();
-        break;
-      case AppID.Experience:
-        console.log('Opened application: Experience');
-        // TODO: Add logic to navigate to Experience
-        break;
-      case AppID.Projects:
-        console.log('Opened application: Projects');
-        // TODO: Add logic to open Projects
-        break;
-      case AppID.Skills:
-        console.log('Opened application: Skills');
-        // TODO: Add logic to navigate to Skills
-        break;
-      case AppID.Education:
-        console.log('Opened application: Education');
-        // TODO: Add logic to open Education
-        break;
-      case AppID.Youtube:
-        console.log('Opened application: My Youtube Channel');
-        // TODO: Add logic to navigate to Youtube channel
-        break;
-      case AppID.Contacts:
-        console.log('Opened application: Contacts');
-        // TODO: Add logic to navigate to Contacts
-        break;
-      default:
-        console.log('Unknown application ID');
+
+  openApp(appId: AppID): void {
+    if (appId == AppID.CV) {
+      this.downloadCV();
+    } else {
+      this.appOpened.emit(appId);
+      console.log("open app", appId)
     }
   }
 
