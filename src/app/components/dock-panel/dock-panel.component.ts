@@ -113,21 +113,19 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
     const MIN_SCALE = 1;
     const MAX_SCALE = 2;
 
+    const dockRect = this.dockPanel.nativeElement.getBoundingClientRect();
+
+    if (mouseX < dockRect.left || mouseX > dockRect.right || mouseY < dockRect.top || mouseY > dockRect.bottom) {
+      this.resetDockItemScales();
+      return;
+    }
+
     this.dockItemElements.forEach((itemElementRef, index) => {
       const itemElement = itemElementRef.nativeElement as HTMLElement;
       const rect = itemElement.getBoundingClientRect();
       const imgCenterX = rect.left + rect.width / 2;
-      const imgCenterY = rect.top + rect.height / 2;
 
-      const distanceX = mouseX - imgCenterX;
-      let distanceY = mouseY - imgCenterY;
-
-      let distance = Math.hypot(distanceX, distanceY);
-
-      if (!this.isMouseOverDock) {
-        distanceY += MAX_DISTANCE;
-        distance = Math.hypot(distanceX, distanceY);
-      }
+      const distance = Math.abs(mouseX - imgCenterX);
 
       const scaleFactor = this.calculateScaleFactor(distance, MAX_DISTANCE, MIN_SCALE, MAX_SCALE);
       this.dockItems[index].scale = parseFloat(scaleFactor.toFixed(2));
