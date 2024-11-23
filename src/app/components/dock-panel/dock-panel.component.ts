@@ -14,12 +14,27 @@ import {
 import { DockItemComponent } from '../dock-item/dock-item.component';
 import { isPlatformBrowser, NgForOf, NgIf } from '@angular/common';
 import { fromEvent, Subscription } from 'rxjs';
+import {FileDownloadService} from '../../services/file-download.service';
 
-interface DockItem {
+export enum AppID {
+  Home = 'home',
+  AboutMe = 'aboutMe',
+  CV = 'cv',
+  Experience = 'experience',
+  Projects = 'projects',
+  Skills = 'skills',
+  Education = 'education',
+  Youtube = 'youtube',
+  Contacts = 'contacts',
+}
+
+export interface DockItem {
   iconSrc: string;
   label: string;
   scale: number;
+  appId: AppID;
 }
+
 
 @Component({
   selector: 'app-dock-panel',
@@ -34,16 +49,17 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('dockItem', { read: ElementRef }) dockItemElements!: QueryList<ElementRef>;
 
   dockItems: DockItem[] = [
-    { iconSrc: 'assets/icons/finder.png', label: 'Home', scale: 1 },
-    { iconSrc: 'assets/icons/me.png', label: 'About Me', scale: 1 },
-    { iconSrc: 'assets/icons/pages.png', label: 'CV', scale: 1 },
-    { iconSrc: 'assets/icons/calendar.png', label: 'Experience', scale: 1 },
-    { iconSrc: 'assets/icons/cmd.png', label: 'Projects', scale: 1 },
-    { iconSrc: 'assets/icons/settings.png', label: 'Skills', scale: 1 },
-    { iconSrc: 'assets/icons/books.png', label: 'Education', scale: 1 },
-    { iconSrc: 'assets/icons/yt.png', label: 'My Youtube Channel', scale: 1 },
-    { iconSrc: 'assets/icons/mail.png', label: 'Contacts', scale: 1 },
+    { iconSrc: 'assets/icons/finder.png', label: 'Home', scale: 1, appId: AppID.Home },
+    { iconSrc: 'assets/icons/me.png', label: 'About Me', scale: 1, appId: AppID.AboutMe },
+    { iconSrc: 'assets/icons/pages.png', label: 'Download CV', scale: 1, appId: AppID.CV },
+    { iconSrc: 'assets/icons/calendar.png', label: 'Experience', scale: 1, appId: AppID.Experience },
+    { iconSrc: 'assets/icons/cmd.png', label: 'Projects', scale: 1, appId: AppID.Projects },
+    { iconSrc: 'assets/icons/settings.png', label: 'Skills', scale: 1, appId: AppID.Skills },
+    { iconSrc: 'assets/icons/books.png', label: 'Education', scale: 1, appId: AppID.Education },
+    { iconSrc: 'assets/icons/yt.png', label: 'My Youtube Channel', scale: 1, appId: AppID.Youtube },
+    { iconSrc: 'assets/icons/mail.png', label: 'Contacts', scale: 1, appId: AppID.Contacts },
   ];
+
 
   private isMouseOverDock = false;
   private mouseMoveSubscription!: Subscription;
@@ -52,7 +68,8 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private fileDownloadService: FileDownloadService
   ) {}
 
   ngAfterViewInit() {
@@ -68,9 +85,47 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
     this.mouseMoveSubscription?.unsubscribe();
   }
 
-  openApp(label: string) {
-    console.log(`Opened application: ${label}`);
-    // TODO: Implement application opening logic
+  openApp(appId: AppID) {
+    switch (appId) {
+      case AppID.Home:
+        console.log('Opened application: Home');
+        // TODO: Add logic to navigate to Home
+        break;
+      case AppID.AboutMe:
+        console.log('Opened application: About Me');
+        // TODO: Add logic to navigate to About Me
+        break;
+      case AppID.CV:
+        console.log('Download  CV');
+        this.downloadCV();
+        break;
+      case AppID.Experience:
+        console.log('Opened application: Experience');
+        // TODO: Add logic to navigate to Experience
+        break;
+      case AppID.Projects:
+        console.log('Opened application: Projects');
+        // TODO: Add logic to open Projects
+        break;
+      case AppID.Skills:
+        console.log('Opened application: Skills');
+        // TODO: Add logic to navigate to Skills
+        break;
+      case AppID.Education:
+        console.log('Opened application: Education');
+        // TODO: Add logic to open Education
+        break;
+      case AppID.Youtube:
+        console.log('Opened application: My Youtube Channel');
+        // TODO: Add logic to navigate to Youtube channel
+        break;
+      case AppID.Contacts:
+        console.log('Opened application: Contacts');
+        // TODO: Add logic to navigate to Contacts
+        break;
+      default:
+        console.log('Unknown application ID');
+    }
   }
 
   private setupDockPanelListeners() {
@@ -88,7 +143,7 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  private setupGlobalMouseMoveListener() {
+  setupGlobalMouseMoveListener() {
     this.mouseMoveSubscription = fromEvent<MouseEvent>(window, 'mousemove').subscribe((event) => {
       this.calculateScales(event.clientX, event.clientY);
     });
@@ -142,4 +197,14 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   shouldShowDivider(index: number): boolean {
     return index === 0 || index === this.dockItems.length - 2;
   }
+
+  async downloadCV(): Promise<void> {
+    const cvPath = `/assets/cv.pdf`;
+    try {
+      await this.fileDownloadService.downloadFile(cvPath, 'Magzhan_CV.pdf');
+    } catch (error) {
+      console.error('Failed to download CV:', error);
+    }
+  }
+
 }

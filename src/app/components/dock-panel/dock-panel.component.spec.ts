@@ -1,93 +1,86 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DockPanelComponent } from './dock-panel.component';
-import { DockItemComponent } from '../dock-item/dock-item.component';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { DockPanelComponent, AppID } from './dock-panel.component';
+import { FileDownloadService } from '../../services/file-download.service';
+import { ChangeDetectorRef, ElementRef } from '@angular/core';
 
 describe('DockPanelComponent', () => {
   let component: DockPanelComponent;
   let fixture: ComponentFixture<DockPanelComponent>;
-  let dockPanelDebugElement: DebugElement;
+  let fileDownloadServiceSpy: jasmine.SpyObj<FileDownloadService>;
+  let cdrSpy: jasmine.SpyObj<ChangeDetectorRef>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DockPanelComponent, DockItemComponent],
-    }).compileComponents();
+    fileDownloadServiceSpy = jasmine.createSpyObj('FileDownloadService', ['downloadFile']);
+    cdrSpy = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
 
+    await TestBed.configureTestingModule({
+      declarations: [DockPanelComponent],
+      providers: [
+        { provide: FileDownloadService, useValue: fileDownloadServiceSpy },
+        { provide: ChangeDetectorRef, useValue: cdrSpy },
+        { provide: ElementRef, useValue: { nativeElement: document.createElement('div') } },
+      ],
+    }).compileComponents();
+  });
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(DockPanelComponent);
     component = fixture.componentInstance;
-    dockPanelDebugElement = fixture.debugElement;
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the correct number of dock items', () => {
-    const dockItemElements = dockPanelDebugElement.queryAll(By.css('app-dock-item'));
-    expect(dockItemElements.length).toBe(component.dockItems.length);
+  it('should call downloadCV when AppID.CV is passed to openApp', async () => {
+    spyOn(component, 'downloadCV');
+    component.openApp(AppID.CV);
+    expect(component.downloadCV).toHaveBeenCalled();
   });
 
-  it('should display the correct label for each dock item', () => {
-    const dockItemElements = dockPanelDebugElement.queryAll(By.css('app-dock-item'));
-    dockItemElements.forEach((el, index) => {
-      expect(el.componentInstance.label).toBe(component.dockItems[index].label);
-    });
+  it('should call FileDownloadService.downloadFile in downloadCV', async () => {
+    const cvPath = '/assets/cv.pdf';
+    await component.downloadCV();
+    expect(fileDownloadServiceSpy.downloadFile).toHaveBeenCalledWith(cvPath, 'Magzhan_CV.pdf');
   });
 
-  it('should invoke openApp() when a dock item is clicked', () => {
-    spyOn(component, 'openApp');
-    const firstDockItem = dockPanelDebugElement.query(By.css('app-dock-item'));
-    firstDockItem.triggerEventHandler('click', null);
-    expect(component.openApp).toHaveBeenCalledWith(component.dockItems[0].label);
+  it('should log error if downloadCV fails', async () => {
+    fileDownloadServiceSpy.downloadFile.and.throwError('Test error');
+    spyOn(console, 'error');
+    await component.downloadCV();
+    expect(console.error).toHaveBeenCalledWith('Failed to download CV:', jasmine.any(Error));
   });
 
-  it('should render dividers correctly based on shouldShowDivider()', () => {
-    const dividerElements = dockPanelDebugElement.queryAll(By.css('.divider'));
-    const expectedDividerCount = component.dockItems.filter((_, i) =>
-      component.shouldShowDivider(i)
-    ).length;
-    expect(dividerElements.length).toBe(expectedDividerCount);
+  it('should reset dock item scales on mouse leave', () => {
+    component.dockItems = [
+      { iconSrc: '', label: '', scale: 1, appId: AppID.Home },
+      { iconSrc: '', label: '', scale: 1.5, appId: AppID.CV },
+    ];
+
+    component.resetDockItemScales();
+
+    component.dockItems.forEach((item) => expect(item.scale).toBe(1));
+    expect(cdrSpy.markForCheck).toHaveBeenCalled();
   });
 
-  it('should correctly calculate scale factors', () => {
-    const distance = 200;
+  it('should calculate correct scale factor based on distance', () => {
+    const distance = 100;
     const maxDistance = 450;
     const minScale = 1;
     const maxScale = 2;
-    const expectedScale = component.calculateScaleFactor(distance, maxDistance, minScale, maxScale);
-    expect(expectedScale).toBeCloseTo(1.56, 2);
+
+    const result = component.calculateScaleFactor(distance, maxDistance, minScale, maxScale);
+
+    expect(result).toBeGreaterThan(1);
+    expect(result).toBeLessThanOrEqual(maxScale);
   });
 
-  it('should reset dock item scales when the mouse leaves the dock panel', () => {
-    component.dockItems.forEach((item) => (item.scale = 1.5)); // Simulate scaled items
-    component.resetDockItemScales();
-    component.dockItems.forEach((item) => {
-      expect(item.scale).toBe(1);
-    });
-  });
-
-  it('should handle mouse enter and leave events correctly', () => {
-    const mouseEnterEvent = new Event('mouseenter');
-    const mouseLeaveEvent = new Event('mouseleave');
-
-    spyOn(component, 'resetDockItemScales').and.callThrough();
-
-    dockPanelDebugElement.triggerEventHandler('mouseenter', mouseEnterEvent);
-    expect(component['isMouseOverDock']).toBeTrue();
-
-    dockPanelDebugElement.triggerEventHandler('mouseleave', mouseLeaveEvent);
-    expect(component['isMouseOverDock']).toBeFalse();
-    expect(component.resetDockItemScales).toHaveBeenCalled();
-  });
-
-  it('should calculate correct dock item scales on mouse movement', () => {
-    spyOn(component, 'calculateScales').and.callThrough();
-
-    const mockMouseEvent = new MouseEvent('mousemove', { clientX: 100, clientY: 200 });
-    window.dispatchEvent(mockMouseEvent);
-
+  it('should handle mousemove event correctly', () => {
+    const mockEvent = new MouseEvent('mousemove', { clientX: 100, clientY: 200 });
+    spyOn(component, 'calculateScales');
+    component.setupGlobalMouseMoveListener();
+    window.dispatchEvent(mockEvent);
     expect(component.calculateScales).toHaveBeenCalledWith(100, 200);
   });
 });

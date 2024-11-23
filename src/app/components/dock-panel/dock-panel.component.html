@@ -5,7 +5,7 @@
       [iconSrc]="item.iconSrc"
       [label]="item.label"
       [scale]="item.scale"
-      (click)="openApp(item.label)">
+      (click)="openApp(item.appId)">
     </app-dock-item>
     <div *ngIf="shouldShowDivider(i)" class="divider"></div>
   </ng-container>
