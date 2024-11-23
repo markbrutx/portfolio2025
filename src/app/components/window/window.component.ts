@@ -8,11 +8,13 @@ import {
   OnDestroy,
   Output,
   ViewChild,
-  HostListener,
+  HostListener, PLATFORM_ID, Inject,
 } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import {NgClass, NgStyle} from '@angular/common';
+import {isPlatformBrowser, NgClass, NgStyle} from '@angular/common';
+import { WindowPositionService } from '../../services/window-position.service';
+import { Position } from '../../models/desktop.models';
 import {TrafficLightsComponent} from '../traffic-lights/traffic-lights.component';
 
 @Component({
@@ -21,38 +23,43 @@ import {TrafficLightsComponent} from '../traffic-lights/traffic-lights.component
   templateUrl: './window.component.html',
   styleUrls: ['./window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NgClass,
-    NgStyle,
-    TrafficLightsComponent
-  ]
+  imports: [NgClass, NgStyle, TrafficLightsComponent],
 })
 export class WindowComponent implements AfterViewInit, OnDestroy {
   @Input() appId!: string;
-  @Input() width = 400;
-  @Input() height = 300;
-  @Input() initialPosition = { x: 100, y: 100 };
+  @Input() width = 500;
+  @Input() height = 400;
+  @Input() initialPosition: Position = { x: 100, y: 100 };
+  @Input() allowMaximize = true;
+  @Input() defaultTitle = 'Untitled Window';
   @Output() close = new EventEmitter<void>();
 
   @ViewChild('window', { static: true }) windowElement!: ElementRef;
 
-  position = { ...this.initialPosition };
+  position: Position = { ...this.initialPosition };
   isMaximized = false;
   isActive = false;
 
   private dragSub!: Subscription;
 
+  constructor(  @Inject(PLATFORM_ID) private platformId: Object, private positionService: WindowPositionService) {}
+
   @HostListener('document:mousedown', ['$event'])
   deactivateWindow(event: MouseEvent) {
-    if (!this.windowElement.nativeElement.contains(event.target)) {
+    if (isPlatformBrowser(this.platformId) && !this.windowElement.nativeElement.contains(event.target)) {
       this.isActive = false;
     }
   }
 
   ngAfterViewInit() {
-    this.dragSub = fromEvent(window, 'resize')
-      .pipe(debounceTime(200))
-      .subscribe(() => this.ensureInBounds());
+    if (isPlatformBrowser(this.platformId)) {
+      this.position = { ...this.initialPosition };
+      this.updateWindowPosition();
+
+      this.dragSub = fromEvent(window, 'resize')
+        .pipe(debounceTime(200))
+        .subscribe(() => this.ensureInBounds());
+    }
   }
 
   ngOnDestroy() {
@@ -60,7 +67,7 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
   }
 
   startDrag(event: MouseEvent) {
-    if (this.isMaximized) return;
+    if (!isPlatformBrowser(this.platformId) || this.isMaximized) return;
 
     const startX = event.clientX;
     const startY = event.clientY;
@@ -90,18 +97,20 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
     window.addEventListener('mousemove', mouseMoveListener);
     window.addEventListener('mouseup', stopDragListener);
   }
-
-  updateWindowPosition() {
-    const { x, y } = this.position;
-    this.windowElement.nativeElement.style.transform = `translate(${x}px, ${y}px)`;
+  toggleMaximize() {
+    if (this.allowMaximize) {
+      this.isMaximized = !this.isMaximized;
+    }
   }
 
-  toggleMaximize() {
-    this.isMaximized = !this.isMaximized;
+  updateWindowPosition() {
+    if (!this.isMaximized) {
+      const { x, y } = this.position;
+      this.windowElement.nativeElement.style.transform = `translate(${x}px, ${y}px)`;
+    }
   }
 
   minimizeWindow() {
-    // TODO придумать что делать с этой функцией
     this.close.emit();
   }
 
@@ -110,10 +119,13 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
   }
 
   private ensureInBounds() {
-    const { innerWidth, innerHeight } = window;
     const rect = this.windowElement.nativeElement.getBoundingClientRect();
-
-    this.position.x = Math.max(0, Math.min(rect.x, innerWidth - rect.width));
-    this.position.y = Math.max(0, Math.min(rect.y, innerHeight - rect.height));
+    this.position = this.positionService.ensureInBounds(
+      this.position,
+      rect,
+      window.innerWidth,
+      window.innerHeight
+    );
+    this.updateWindowPosition();
   }
 }

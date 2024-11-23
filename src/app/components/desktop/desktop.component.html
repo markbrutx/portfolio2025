@@ -4,6 +4,7 @@
       <app-window
         *ngIf="app.isOpen"
         [appId]="app.id"
+        [initialPosition]="getSafeInitialPosition(app)"
         (close)="closeApp(app.id)"
       ></app-window>
     </ng-container>

@@ -3,8 +3,7 @@
   [ngClass]="{ active: isActive, maximized: isMaximized }"
   [ngStyle]="{
     width: isMaximized ? '100%' : width + 'px',
-    height: isMaximized ? 'calc(100vh - 2rem)' : height + 'px',
-    transform: isMaximized ? 'none' : 'translate(' + position.x + 'px, ' + position.y + 'px)'
+    height: isMaximized ? 'calc(100vh - 2rem)' : height + 'px'
   }"
   #window
 >
@@ -14,9 +13,9 @@
       (maximize)="toggleMaximize()"
       (minimize)="minimizeWindow()"
     ></app-traffic-lights>
+    <div class="window-title">{{ defaultTitle }}</div>
   </div>
   <div class="window-content">
-    <p>App ID: {{ appId }}</p>
     <ng-content></ng-content>
   </div>
 </div>

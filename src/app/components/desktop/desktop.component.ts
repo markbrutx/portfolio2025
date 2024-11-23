@@ -1,36 +1,65 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component, Inject,
+  PLATFORM_ID,
+} from '@angular/core';
+import { OpenApp, Position } from '../../models/desktop.models';
 import { AppID } from '../../shared/app-id.enum';
-import { WindowComponent } from '../window/window.component';
-import { NgForOf, NgIf } from '@angular/common';
-
-interface OpenApp {
-  id: AppID;
-  isOpen: boolean;
-}
+import { PositionService } from '../../services/position.service';
+import {WindowComponent} from '../window/window.component';
+import {isPlatformBrowser, NgForOf, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-desktop',
   templateUrl: './desktop.component.html',
   styleUrls: ['./desktop.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
   imports: [
     WindowComponent,
-    NgIf,
-    NgForOf
-  ],
-  standalone: true
+    NgForOf,
+    NgIf
+  ]
 })
-export class DesktopComponent {
+export class DesktopComponent implements AfterViewInit  {
   openApps: OpenApp[] = [];
+  private readonly windowWidth = 500;
+  private readonly windowHeight = 400;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private positionService: PositionService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  openApp(appId: AppID): void {
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      requestAnimationFrame(() => {
+        const centerPosition = this.positionService.getCenterPosition(
+          this.windowWidth,
+          this.windowHeight
+        );
+        this.openApp(AppID.AboutMe, centerPosition);
+      });
+    }
+  }
+
+  openApp(appId: AppID, initialPosition?: Position): void {
     const existingApp = this.openApps.find((app) => app.id === appId);
+
     if (existingApp) {
       existingApp.isOpen = true;
     } else {
-      this.openApps.push({ id: appId, isOpen: true });
+      const position =
+        initialPosition ??
+        this.positionService.getNextPosition(
+          this.openApps,
+          this.windowWidth,
+          this.windowHeight
+        );
+      this.openApps.push({ id: appId, isOpen: true, initialPosition: position });
     }
 
     this.cdr.markForCheck();
@@ -44,4 +73,7 @@ export class DesktopComponent {
     }
   }
 
+  getSafeInitialPosition(app: OpenApp): Position {
+    return app.initialPosition ?? this.positionService.getCenterPosition(this.windowWidth, this.windowHeight);
+  }
 }

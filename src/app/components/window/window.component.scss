@@ -3,13 +3,14 @@
 .window-container {
   --elevated-shadow: #{vars.$window-shadow-elevated};
   --active-shadow: #{vars.$window-shadow-active};
-
   position: absolute;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
   border-radius: #{vars.$window-border-radius};
   box-shadow: var(--elevated-shadow);
   background-color: #{vars.$window-bg-color};
-  overflow: hidden;
-  will-change: transform;
+  will-change: transform, box-shadow;
 
   &.active {
     box-shadow: var(--active-shadow);
@@ -19,15 +20,33 @@
     border-radius: 0;
     top: 0;
     left: 0;
+    transform: none;
+    width: 100%;
+    height: calc(100vh - 2rem);
   }
 }
 
 .window-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: #{vars.$window-header-padding};
   background-color: #{vars.$window-header-bg-color};
   border-bottom: 1px solid #{vars.$window-header-border-color};
+  cursor: grab;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.window-title {
+  flex-grow: 1;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #{vars.$window-title-color};
 }
 
 .window-content {
@@ -35,4 +54,8 @@
   padding: #{vars.$window-content-padding};
   overflow: auto;
   background-color: #{vars.$window-content-bg-color};
+}
+
+app-traffic-lights {
+  position: absolute;
 }
