@@ -43,7 +43,7 @@ $dock-item-active-size: 8px;
 $dock-item-transition: 0.2s;
 
 // Dock panel
-$dock-panel-height: 4rem;
+$dock-panel-height: 5rem;
 $dock-panel-padding: 0.625rem 0.9375rem;
 $dock-panel-background: rgba(255, 255, 255, 0.4);
 $dock-panel-border-radius: 0.9375rem;
@@ -53,3 +53,15 @@ $dock-panel-blur: 10px;
 $dock-divider-width: 1px;
 $dock-divider-color: rgba(0, 0, 0, 0.2);
 $dock-divider-margin: 0 0.5rem;
+
+// Cursor variables
+$cursor-default: url('/assets/cursors/normal-select.svg'), auto;
+$cursor-pointer: url('/assets/cursors/link-select.svg'), auto;
+$cursor-text: url('/assets/cursors/text-select.svg'), auto;
+$cursor-help: url('/assets/cursors/help-select.svg'), auto;
+$cursor-busy: url('/assets/cursors/busy.webp'), auto;
+$cursor-working-bg: url('/assets/cursors/working-in-background.webp'), auto;
+
+// Common
+$font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$focus-outline: 0 0 0 3px hsla(210, 100%, 52%, 0.5);
