@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing'
 
-import { WindowPositionService } from './window-position.service';
+import { WindowPositionService } from './window-position.service'
 
 describe('WindowPositionService', () => {
-  let service: WindowPositionService;
+  let service: WindowPositionService
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(WindowPositionService);
-  });
+    TestBed.configureTestingModule({})
+    service = TestBed.inject(WindowPositionService)
+  })
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+    expect(service).toBeTruthy()
+  })
+})

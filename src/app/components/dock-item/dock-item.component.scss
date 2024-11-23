@@ -31,7 +31,9 @@
 
   .tooltip {
     position: absolute;
-    bottom: calc(100% + 0.5rem + (#{vars.$dock-item-size} * (var(--scale) - 1)));
+    bottom: calc(
+      100% + 0.5rem + (#{vars.$dock-item-size} * (var(--scale) - 1))
+    );
     left: 50%;
     transform: translateX(-50%);
     padding: #{vars.$dock-item-tooltip-padding};
@@ -40,7 +42,9 @@
     border-radius: #{vars.$dock-item-tooltip-radius};
     white-space: nowrap;
     opacity: 0;
-    transition: opacity #{vars.$dock-item-transition}, transform #{vars.$dock-item-transition};
+    transition:
+      opacity #{vars.$dock-item-transition},
+      transform #{vars.$dock-item-transition};
     pointer-events: none;
     box-shadow: #{vars.$dock-item-tooltip-shadow};
 

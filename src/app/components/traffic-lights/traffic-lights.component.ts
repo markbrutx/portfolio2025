@@ -3,7 +3,7 @@ import {
   Component,
   EventEmitter,
   Output,
-} from '@angular/core';
+} from '@angular/core'
 
 @Component({
   selector: 'app-traffic-lights',
@@ -13,19 +13,19 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrafficLightsComponent {
-  @Output() close = new EventEmitter<void>();
-  @Output() maximize = new EventEmitter<void>();
-  @Output() minimize = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>()
+  @Output() maximize = new EventEmitter<void>()
+  @Output() minimize = new EventEmitter<void>()
 
   onClose() {
-    this.close.emit();
+    this.close.emit()
   }
 
   onMaximize() {
-    this.maximize.emit();
+    this.maximize.emit()
   }
 
   onMinimize() {
-    this.minimize.emit();
+    this.minimize.emit()
   }
 }

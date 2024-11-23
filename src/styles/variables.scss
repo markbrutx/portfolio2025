@@ -20,15 +20,18 @@ $traffic-light-opacity-duration: 200ms;
 // Window styles
 $window-bg-color: #ffffff;
 $window-border-radius: 0.75rem;
-$window-shadow-elevated: 0px 8px 10px rgba(0, 0, 0, 0.1), 0px 16px 24px rgba(0, 0, 0, 0.2);
-$window-shadow-active: 0px 10px 15px rgba(0, 0, 0, 0.2), 0px 20px 30px rgba(0, 0, 0, 0.4);
+$window-shadow-elevated:
+  0px 8px 10px rgba(0, 0, 0, 0.1),
+  0px 16px 24px rgba(0, 0, 0, 0.2);
+$window-shadow-active:
+  0px 10px 15px rgba(0, 0, 0, 0.2),
+  0px 20px 30px rgba(0, 0, 0, 0.4);
 $window-header-bg-color: #f5f5f7;
 $window-header-border-color: #e0e0e0;
 $window-header-padding: 0.5rem;
 $window-content-bg-color: $window-bg-color;
 $window-content-padding: 1rem;
 $window-title-color: #333333;
-
 
 // Dock item
 $dock-item-size: 4rem;
@@ -65,5 +68,6 @@ $cursor-busy: url('/assets/cursors/busy.webp'), auto;
 $cursor-working-bg: url('/assets/cursors/working-in-background.webp'), auto;
 
 // Common
-$font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue',
+  'Helvetica', 'Arial', sans-serif;
 $focus-outline: 0 0 0 3px hsla(210, 100%, 52%, 0.5);
