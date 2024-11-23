@@ -1,0 +1,55 @@
+// General application styles
+$app-bg-image: url('/assets/backgrounds/macos-bg.jpg');
+$app-bg-size: cover;
+$app-bg-position: center;
+$app-container-width: 100%;
+$app-container-height: 100vh;
+
+// Traffic light buttons
+$traffic-light-color-close: #ff5f56;
+$traffic-light-border-close: #e0443e;
+$traffic-light-color-minimize: #ffbd2e;
+$traffic-light-border-minimize: #dea123;
+$traffic-light-color-maximize: #27c93f;
+$traffic-light-border-maximize: #1aab29;
+$traffic-light-button-size: 0.8rem;
+$traffic-light-hover-scale: 1.2;
+$traffic-light-transform-duration: 100ms;
+$traffic-light-opacity-duration: 200ms;
+
+// Window styles
+$window-bg-color: #ffffff;
+$window-border-radius: 0.75rem;
+$window-shadow-elevated: 0px 8px 10px rgba(0, 0, 0, 0.1), 0px 16px 24px rgba(0, 0, 0, 0.2);
+$window-shadow-active: 0px 10px 15px rgba(0, 0, 0, 0.2), 0px 20px 30px rgba(0, 0, 0, 0.4);
+$window-header-bg-color: #f5f5f7;
+$window-header-border-color: #e0e0e0;
+$window-header-padding: 0.5rem;
+$window-content-bg-color: $window-bg-color;
+$window-content-padding: 1rem;
+
+// Dock item
+$dock-item-size: 4rem;
+$dock-item-hover-scale: 1;
+$dock-item-tooltip-bg: rgba(255, 255, 255, 0.9);
+$dock-item-tooltip-shadow: 0 0 0.3125rem rgba(0, 0, 0, 0.3);
+$dock-item-tooltip-blur: 5px;
+$dock-item-tooltip-padding: 0.3125rem 0.625rem;
+$dock-item-tooltip-radius: 0.3125rem;
+$dock-item-label-color: #000;
+$dock-item-label-font-size: 14px;
+$dock-item-active-color: #0f9d58;
+$dock-item-active-size: 8px;
+$dock-item-transition: 0.2s;
+
+// Dock panel
+$dock-panel-height: 4rem;
+$dock-panel-padding: 0.625rem 0.9375rem;
+$dock-panel-background: rgba(255, 255, 255, 0.4);
+$dock-panel-border-radius: 0.9375rem;
+$dock-panel-blur: 10px;
+
+// Divider
+$dock-divider-width: 1px;
+$dock-divider-color: rgba(0, 0, 0, 0.2);
+$dock-divider-margin: 0 0.5rem;

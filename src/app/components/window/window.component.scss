@@ -1,16 +1,18 @@
+@use 'variables' as vars;
+
 .window-container {
-  --elevated-shadow: 0px 8px 10px rgba(0, 0, 0, 0.1), 0px 16px 24px rgba(0, 0, 0, 0.2);
+  --elevated-shadow: #{vars.$window-shadow-elevated};
+  --active-shadow: #{vars.$window-shadow-active};
 
   position: absolute;
-  border-radius: 0.75rem;
+  border-radius: #{vars.$window-border-radius};
   box-shadow: var(--elevated-shadow);
-  background-color: #ffffff;
+  background-color: #{vars.$window-bg-color};
   overflow: hidden;
-  cursor: default;
   will-change: transform;
 
   &.active {
-    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.2), 0px 20px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--active-shadow);
   }
 
   &.maximized {
@@ -23,46 +25,15 @@
 .window-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: 0.5rem;
-  background-color: #f5f5f7;
-  border-bottom: 1px solid #e0e0e0;
-  user-select: none;
+  padding: #{vars.$window-header-padding};
+  background-color: #{vars.$window-header-bg-color};
+  border-bottom: 1px solid #{vars.$window-header-border-color};
   cursor: grab;
-
-  .traffic-lights {
-    display: flex;
-    gap: 0.5rem;
-
-    button {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: none;
-      background-color: #d0d0d0;
-
-      &.close {
-        background-color: #ff5f56;
-      }
-
-      &.minimize {
-        background-color: #ffbd2e;
-      }
-
-      &.maximize {
-        background-color: #27c93f;
-      }
-
-      &:hover {
-        filter: brightness(90%);
-      }
-    }
-  }
 }
 
 .window-content {
   flex: 1;
-  background-color: #ffffff;
-  padding: 1rem;
+  padding: #{vars.$window-content-padding};
   overflow: auto;
+  background-color: #{vars.$window-content-bg-color};
 }

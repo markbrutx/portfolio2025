@@ -2,23 +2,30 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  ElementRef, EventEmitter,
-  HostListener,
+  ElementRef,
+  EventEmitter,
   Input,
-  OnDestroy, Output,
+  OnDestroy,
+  Output,
   ViewChild,
+  HostListener,
 } from '@angular/core';
-import {NgClass, NgStyle} from '@angular/common';
 import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import {NgClass, NgStyle} from '@angular/common';
+import {TrafficLightsComponent} from '../traffic-lights/traffic-lights.component';
 
 @Component({
   selector: 'app-window',
   standalone: true,
-  imports: [NgClass, NgStyle],
   templateUrl: './window.component.html',
   styleUrls: ['./window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgClass,
+    NgStyle,
+    TrafficLightsComponent
+  ]
 })
 export class WindowComponent implements AfterViewInit, OnDestroy {
   @Input() appId!: string;
@@ -34,12 +41,6 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
   isActive = false;
 
   private dragSub!: Subscription;
-  private resizing = false;
-
-  @HostListener('click')
-  activateWindow() {
-    this.isActive = true;
-  }
 
   @HostListener('document:mousedown', ['$event'])
   deactivateWindow(event: MouseEvent) {
@@ -59,7 +60,7 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
   }
 
   startDrag(event: MouseEvent) {
-    if (this.isMaximized || this.resizing) return;
+    if (this.isMaximized) return;
 
     const startX = event.clientX;
     const startY = event.clientY;
@@ -91,10 +92,8 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
   }
 
   updateWindowPosition() {
-    if (this.windowElement) {
-      const { x, y } = this.position;
-      this.windowElement.nativeElement.style.transform = `translate(${x}px, ${y}px)`;
-    }
+    const { x, y } = this.position;
+    this.windowElement.nativeElement.style.transform = `translate(${x}px, ${y}px)`;
   }
 
   toggleMaximize() {
@@ -102,35 +101,19 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
   }
 
   minimizeWindow() {
-    // TODO Minimizing window
-    console.log(`Window ${this.appId} minimized`);
+    // TODO придумать что делать с этой функцией
+    this.close.emit();
   }
 
   closeWindow() {
     this.close.emit();
   }
 
-
   private ensureInBounds() {
     const { innerWidth, innerHeight } = window;
-    const element = this.windowElement.nativeElement;
-    const rect = element.getBoundingClientRect();
+    const rect = this.windowElement.nativeElement.getBoundingClientRect();
 
-    if (rect.right > innerWidth) {
-      this.position.x = innerWidth - rect.width;
-    }
-    if (rect.bottom > innerHeight) {
-      this.position.y = innerHeight - rect.height;
-    }
-    if (rect.left < 0) {
-      this.position.x = 0;
-    }
-    if (rect.top < 0) {
-      this.position.y = 0;
-    }
+    this.position.x = Math.max(0, Math.min(rect.x, innerWidth - rect.width));
+    this.position.y = Math.max(0, Math.min(rect.y, innerHeight - rect.height));
   }
 }
-// TODO Проблемы и улучшения в виндоу компоненте
-// Открытие работает, но нужно доработать иконки на светофоре
-// Придумать как передать туда компоненты, возможно рендерить отдельные компонентики
-// Позже список дополнится, иду чинить док панель!

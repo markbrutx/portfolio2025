@@ -9,11 +9,11 @@
   #window
 >
   <div class="window-header" (mousedown)="startDrag($event)">
-    <div class="traffic-lights">
-      <button class="close" (click)="closeWindow()"></button>
-      <button class="minimize" (click)="minimizeWindow()"></button>
-      <button class="maximize" (click)="toggleMaximize()"></button>
-    </div>
+    <app-traffic-lights
+      (close)="closeWindow()"
+      (maximize)="toggleMaximize()"
+      (minimize)="minimizeWindow()"
+    ></app-traffic-lights>
   </div>
   <div class="window-content">
     <p>App ID: {{ appId }}</p>

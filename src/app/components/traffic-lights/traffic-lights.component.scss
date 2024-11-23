@@ -1,0 +1,58 @@
+@use 'variables' as vars;
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, #{vars.$traffic-light-button-size});
+  align-items: center;
+  gap: 0.6rem;
+  height: 100%;
+}
+
+button {
+  position: relative;
+  width: #{vars.$traffic-light-button-size};
+  height: #{vars.$traffic-light-button-size};
+  background-color: var(--bgcolor);
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.5px var(--border-color);
+  transition: transform #{vars.$traffic-light-transform-duration} ease-in;
+
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity #{vars.$traffic-light-opacity-duration} ease-in;
+  }
+
+  &:hover {
+    transform: scale(#{vars.$traffic-light-hover-scale});
+
+    svg {
+      opacity: 1;
+    }
+  }
+}
+
+.close-light {
+  --bgcolor: #{vars.$traffic-light-color-close};
+  --border-color: #{vars.$traffic-light-border-close};
+}
+
+.minimize-light {
+  --bgcolor: #{vars.$traffic-light-color-minimize};
+  --border-color: #{vars.$traffic-light-border-minimize};
+}
+
+.stretch-light {
+  --bgcolor: #{vars.$traffic-light-color-maximize};
+  --border-color: #{vars.$traffic-light-border-maximize};
+
+  svg {
+    transform: translate(-50%, -50%) rotate(180deg);
+    width: 100%;
+    height: 100%;
+  }
+}

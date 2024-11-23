@@ -29,9 +29,12 @@
               "src/favicon.ico",
               "src/assets"
             ],
-
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            },
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/styles/global.scss"
             ],
             "scripts": [],
             "server": "src/main.server.ts",

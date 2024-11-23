@@ -1,0 +1,35 @@
+<div class="container">
+  <button class="close-light" (click)="onClose()">
+    <svg width="7" height="7" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        stroke="#000"
+        stroke-width="1.2"
+        stroke-linecap="round"
+        d="M1.182 5.99L5.99 1.182m0 4.95L1.182 1.323"
+      />
+    </svg>
+  </button>
+  <button class="minimize-light" (click)="onMinimize()">
+    <svg fill="none" xmlns="http://www.w3.org/2000/svg" width="6" height="1">
+      <path
+        stroke="#000"
+        stroke-linecap="round"
+        stroke-width="1.5"
+        d="M.61.703h5.8"
+      />
+    </svg>
+  </button>
+  <button class="stretch-light" (click)="onMaximize()">
+    <svg
+      viewBox="0 0 13 13"
+      xmlns="http://www.w3.org/2000/svg"
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      stroke-linejoin="round"
+      stroke-miterlimit="2"
+    >
+      <path d="M4.871 3.553L9.37 8.098V3.553H4.871zm3.134 5.769L3.506 4.777v4.545h4.499z" />
+      <circle cx="6.438" cy="6.438" r="6.438" fill="none" />
+    </svg>
+  </button>
+</div>
