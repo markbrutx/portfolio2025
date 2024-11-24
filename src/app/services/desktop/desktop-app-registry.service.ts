@@ -12,7 +12,7 @@ export class DesktopAppRegistryService {
     {
       id: AppID.AboutMe,
       title: 'About Me',
-      allowMaximize: true,
+      allowMaximize: false,
       width: 600,
       height: 400,
       component: AboutMeComponent,
@@ -20,7 +20,7 @@ export class DesktopAppRegistryService {
     {
       id: AppID.Skills,
       title: 'Skills',
-      allowMaximize: false,
+      allowMaximize: true,
       width: 500,
       height: 300,
       component: SkillsComponent,

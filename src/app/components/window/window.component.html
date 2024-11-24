@@ -10,6 +10,7 @@
 >
   <div class="window-header" (mousedown)="startDrag($event)">
     <app-traffic-lights
+      [allowMaximize]="config.allowMaximize"
       (close)="closeWindow()"
       (maximize)="toggleMaximize()"
       (minimize)="minimizeWindow()"

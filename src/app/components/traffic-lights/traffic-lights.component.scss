@@ -40,6 +40,24 @@ button {
       opacity: 1;
     }
   }
+
+  &.disabled {
+    --bgcolor: #d3d3d3;
+    --border-color: #a9a9a9;
+    cursor: not-allowed;
+
+    svg {
+      opacity: 0;
+    }
+
+    &:hover {
+      transform: scale(#{vars.$traffic-light-hover-scale});
+
+      svg {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .close-light {

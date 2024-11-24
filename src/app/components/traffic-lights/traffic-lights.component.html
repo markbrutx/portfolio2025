@@ -19,7 +19,9 @@
       />
     </svg>
   </button>
-  <button class="stretch-light" (click)="onMaximize()">
+  <button
+    [class.disabled]="!allowMaximize"
+    class="stretch-light" (click)="onMaximize()">
     <svg
       viewBox="0 0 13 13"
       xmlns="http://www.w3.org/2000/svg"

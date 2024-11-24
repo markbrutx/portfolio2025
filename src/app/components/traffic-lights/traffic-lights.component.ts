@@ -1,9 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
+  EventEmitter, Input,
   Output,
 } from '@angular/core'
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-traffic-lights',
@@ -13,6 +14,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrafficLightsComponent {
+  @Input() allowMaximize: boolean = true
   @Output() close = new EventEmitter<void>()
   @Output() maximize = new EventEmitter<void>()
   @Output() minimize = new EventEmitter<void>()
@@ -22,7 +24,9 @@ export class TrafficLightsComponent {
   }
 
   onMaximize() {
-    this.maximize.emit()
+    if (this.allowMaximize) {
+      this.maximize.emit()
+    }
   }
 
   onMinimize() {
