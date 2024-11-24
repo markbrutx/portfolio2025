@@ -11,18 +11,21 @@
   box-shadow: var(--elevated-shadow);
   background-color: #{vars.$window-bg-color};
   will-change: transform, box-shadow;
+  transition: transform 0ms, width 0.3s ease, height 0.3s ease;
+  z-index: 99;
+
 
   &.active {
     box-shadow: var(--active-shadow);
   }
 
   &.maximized {
-    border-radius: 0;
     top: 0;
     left: 0;
     transform: none;
     width: 100%;
     height: calc(100vh - 2rem);
+    z-index: 100;
   }
 }
 

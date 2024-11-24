@@ -13,13 +13,7 @@
   flex-direction: column;
   justify-content: flex-end;
 }
-
-app-dock-panel {
-  z-index: 10;
-}
-
 app-desktop {
   flex: 1;
   position: relative;
-  z-index: 5;
 }

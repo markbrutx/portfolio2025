@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 export interface AppState {
   isDragging: boolean;
+  maximizedWindowId: string | null;
   [key: string]: any;
 }
 
@@ -12,6 +13,7 @@ export interface AppState {
 export class AppStateService {
   private state = new BehaviorSubject<AppState>({
     isDragging: false,
+    maximizedWindowId: null,
   });
 
   state$ = this.state.asObservable();

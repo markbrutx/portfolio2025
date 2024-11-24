@@ -15,6 +15,12 @@
   border-radius: #{vars.$dock-panel-border-radius};
   user-select: none;
   overflow: visible;
+  z-index: 100;
+  transition: z-index 0.3s ease;
+
+  &.lowered {
+    z-index: 10;
+  }
 }
 
 .divider {

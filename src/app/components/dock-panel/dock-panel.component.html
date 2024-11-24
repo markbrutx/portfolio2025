@@ -1,4 +1,4 @@
-<div class="dock-panel" #dockPanel>
+<div class="dock-panel"  [class.lowered]="isMaximizedWindow" #dockPanel>
   <ng-container *ngFor="let item of dockItems; let i = index">
     <app-dock-item
       #dockItem

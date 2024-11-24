@@ -5,6 +5,7 @@
     width: isMaximized ? '100%' : width + 'px',
     height: isMaximized ? 'calc(100vh - 2rem)' : height + 'px',
   }"
+  (mousedown)="activateWindow()"
   #window
 >
   <div class="window-header" (mousedown)="startDrag($event)">

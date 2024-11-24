@@ -18,7 +18,7 @@ import { isPlatformBrowser, NgForOf, NgIf } from '@angular/common';
 import { DockItemComponent } from '../dock-item/dock-item.component';
 import { FileDownloadService } from '../../services/file-download.service';
 import { AppID } from '../../shared/app-id.enum';
-import { DockItemsService } from '../../services/dock-items.service'
+import { DockItemsService } from '../../services/dock/dock-items.service'
 import { DockItem } from '../../models/dock-item.model'
 import { calculateScaleFactor, isMouseInsideRect } from '../../utils/dock-panel.utils'
 import {AppStateService} from '../../state/app-state.service';
@@ -38,6 +38,8 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy, OnInit {
 
   dockItems: DockItem[] = [];
   isDragging = false;
+  isMaximizedWindow = false;
+
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -45,7 +47,7 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy, OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly fileDownloadService: FileDownloadService,
     private readonly dockItemsService: DockItemsService,
-    private readonly appStateService: AppStateService // Подключаем AppStateService
+    private readonly appStateService: AppStateService
   ) {}
 
   ngOnInit(): void {
@@ -54,9 +56,11 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy, OnInit {
     this.subscriptions.push(
       this.appStateService.state$.subscribe((state) => {
         this.isDragging = state.isDragging;
+        this.isMaximizedWindow = !!state.maximizedWindowId;
         if (this.isDragging) {
           this.resetDockItemScales();
         }
+        this.cdr.markForCheck();
       })
     );
   }

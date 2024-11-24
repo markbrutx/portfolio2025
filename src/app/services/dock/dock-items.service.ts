@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { DockItem } from '../models/dock-item.model'
-import { AppID } from '../shared/app-id.enum'
+import { DockItem } from '../../models/dock-item.model'
+import { AppID } from '../../shared/app-id.enum'
 
 @Injectable({
   providedIn: 'root',
