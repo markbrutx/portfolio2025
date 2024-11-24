@@ -1,0 +1,36 @@
+.video-container {
+  position: relative;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 500px;
+  height: 370px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  .ios-buttons {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+
+    .icon-container {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
+}

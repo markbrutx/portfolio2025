@@ -11,9 +11,9 @@ export class DesktopAppRegistryService {
   private apps: DesktopAppConfig[] = [
     {
       id: AppID.AboutMe,
-      title: 'About Me',
+      title: "That's me :)",
       allowMaximize: false,
-      width: 600,
+      width: 500,
       height: 400,
       component: AboutMeComponent,
     },
