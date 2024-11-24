@@ -1,6 +1,7 @@
 {
   "name": "portfolio2025",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "author": "Magzhan N",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
