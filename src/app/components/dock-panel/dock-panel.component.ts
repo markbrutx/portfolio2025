@@ -21,6 +21,7 @@ import { AppID } from '../../shared/app-id.enum';
 import { DockItemsService } from '../../services/dock-items.service'
 import { DockItem } from '../../models/dock-item.model'
 import { calculateScaleFactor, isMouseInsideRect } from '../../utils/dock-panel.utils'
+import {AppStateService} from '../../state/app-state.service';
 
 @Component({
   selector: 'app-dock-panel',
@@ -36,19 +37,30 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy, OnInit {
   @Output() appOpened = new EventEmitter<AppID>();
 
   dockItems: DockItem[] = [];
-  private isMouseOverDock = false;
+  isDragging = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: object,
     private readonly cdr: ChangeDetectorRef,
     private readonly fileDownloadService: FileDownloadService,
-    private readonly dockItemsService: DockItemsService
+    private readonly dockItemsService: DockItemsService,
+    private readonly appStateService: AppStateService // Подключаем AppStateService
   ) {}
 
   ngOnInit(): void {
     this.dockItems = this.dockItemsService.getDockItems();
+
+    this.subscriptions.push(
+      this.appStateService.state$.subscribe((state) => {
+        this.isDragging = state.isDragging;
+        if (this.isDragging) {
+          this.resetDockItemScales();
+        }
+      })
+    );
   }
+
   shouldShowDivider(index: number): boolean {
     return index === 0 || index === this.dockItems.length - 2;
   }
@@ -65,7 +77,7 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy, OnInit {
 
   openApp(appId: AppID): void {
     if (appId === AppID.CV) {
-      this.handleCVDownload();
+      this.handleCVDownload().then();
     } else {
       this.appOpened.emit(appId);
     }
@@ -83,15 +95,13 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy, OnInit {
     const dockPanelElement = this.dockPanel.nativeElement;
 
     this.subscriptions.push(
-      fromEvent(dockPanelElement, 'mouseenter').subscribe(() => {
-        this.isMouseOverDock = true;
-      }),
       fromEvent(dockPanelElement, 'mouseleave').subscribe(() => {
-        this.isMouseOverDock = false;
         this.resetDockItemScales();
       }),
       fromEvent<MouseEvent>(window, 'mousemove').subscribe((event) => {
-        this.calculateScales(event.clientX, event.clientY);
+        if (!this.isDragging) {
+          this.calculateScales(event.clientX, event.clientY);
+        }
       })
     );
   }

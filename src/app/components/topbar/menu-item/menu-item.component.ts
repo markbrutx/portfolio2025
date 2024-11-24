@@ -7,7 +7,7 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { MenuStateService } from '../../../services/menu-state.service';
+import { MenuStateService } from '../../../state/menu-state.service';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ClickOutsideDirective } from '../../../directives/click-outside.directive';
 

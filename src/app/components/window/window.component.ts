@@ -16,9 +16,9 @@ import {
 import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { isPlatformBrowser, NgClass, NgStyle } from '@angular/common';
-import { WindowPositionService } from '../../services/window-position.service';
 import { Position } from '../../models/desktop.models';
 import { TrafficLightsComponent } from '../traffic-lights/traffic-lights.component';
+import { AppStateService } from '../../state/app-state.service';
 
 @Component({
   selector: 'app-window',
@@ -47,31 +47,29 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
-    private positionService: WindowPositionService,
+    private appStateService: AppStateService,
     private ngZone: NgZone
   ) {}
 
   @HostListener('document:mousedown', ['$event'])
   deactivateWindow(event: MouseEvent) {
-    if (
-      isPlatformBrowser(this.platformId) &&
-      !this.windowElement.nativeElement.contains(event.target)
-    ) {
+    if (isPlatformBrowser(this.platformId) && !this.windowContains(event.target)) {
       this.isActive = false;
     }
   }
 
   ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.ngZone.runOutsideAngular(() => {
-        this.position = { ...this.initialPosition };
-        this.updateWindowPosition();
+    if (!isPlatformBrowser(this.platformId)) return;
 
-        this.dragSub = fromEvent(window, 'resize')
-          .pipe(debounceTime(200))
-          .subscribe(() => this.ngZone.run(() => this.ensureInBounds()));
-      });
-    }
+    this.ngZone.runOutsideAngular(() => {
+      this.position = { ...this.initialPosition };
+      this.updateWindowPosition();
+      this.enforceBounds();
+
+      this.dragSub = fromEvent(window, 'resize')
+        .pipe(debounceTime(200))
+        .subscribe(() => this.ngZone.run(() => this.enforceBounds()));
+    });
   }
 
   ngOnDestroy() {
@@ -81,46 +79,29 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
   startDrag(event: MouseEvent) {
     if (!isPlatformBrowser(this.platformId) || this.isMaximized) return;
 
-    const startX = event.clientX;
-    const startY = event.clientY;
-    const initialX = this.position.x;
-    const initialY = this.position.y;
+    const { clientX: startX, clientY: startY } = event;
+    const { x: initialX, y: initialY } = this.position;
+    this.appStateService.setState({ isDragging: true });
 
     const moveWindow = (moveEvent: MouseEvent) => {
       const deltaX = moveEvent.clientX - startX;
       const deltaY = moveEvent.clientY - startY;
 
-      this.position = {
-        x: initialX + deltaX,
-        y: initialY + deltaY,
-      };
-      this.updateWindowPosition();
+      this.position = { x: initialX + deltaX, y: initialY + deltaY };
+      this.enforceBounds();
     };
 
-    const mouseMoveListener = (moveEvent: MouseEvent) => {
-      requestAnimationFrame(() => moveWindow(moveEvent));
-    };
-
-    const stopDragListener = () => {
-      window.removeEventListener('mousemove', mouseMoveListener);
-      window.removeEventListener('mouseup', stopDragListener);
-    };
-
-    window.addEventListener('mousemove', mouseMoveListener);
-    window.addEventListener('mouseup', stopDragListener);
+    this.trackDrag(moveWindow, () => this.appStateService.setState({ isDragging: false }));
   }
 
   toggleMaximize() {
-    if (this.allowMaximize) {
-      this.isMaximized = !this.isMaximized;
-    }
+    if (this.allowMaximize) this.isMaximized = !this.isMaximized;
   }
 
   updateWindowPosition() {
-    if (!this.isMaximized) {
-      const { x, y } = this.position;
-      this.windowElement.nativeElement.style.transform = `translate(${x}px, ${y}px)`;
-    }
+    if (!isPlatformBrowser(this.platformId) || this.isMaximized) return;
+    const { x, y } = this.position;
+    this.windowElement.nativeElement.style.transform = `translate(${x}px, ${y}px)`;
   }
 
   minimizeWindow() {
@@ -131,14 +112,43 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
     this.close.emit();
   }
 
-  private ensureInBounds() {
+  private enforceBounds() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const rect = this.windowElement.nativeElement.getBoundingClientRect();
-    this.position = this.positionService.ensureInBounds(
-      this.position,
-      rect,
-      window.innerWidth,
-      window.innerHeight
-    );
+    const container = document.querySelector('.windows-area');
+    if (!container) return;
+
+    const { minX, maxX, minY, maxY } = this.calculateBounds(container, rect);
+
+    this.position.x = Math.max(minX, Math.min(this.position.x, maxX));
+    this.position.y = Math.max(minY, Math.min(this.position.y, maxY));
+
     this.updateWindowPosition();
+  }
+
+  private calculateBounds(container: Element, rect: DOMRect) {
+    const containerRect = container.getBoundingClientRect();
+    return {
+      minX: -200,
+      maxX: containerRect.width - rect.width + 200,
+      minY: 0,
+      maxY: containerRect.height - rect.height + 200,
+    };
+  }
+
+  private trackDrag(onMove: (moveEvent: MouseEvent) => void, onStop?: () => void) {
+    const mouseMoveListener = (event: MouseEvent) => requestAnimationFrame(() => onMove(event));
+    const stopDragListener = () => {
+      window.removeEventListener('mousemove', mouseMoveListener);
+      window.removeEventListener('mouseup', stopDragListener);
+      if (onStop) onStop();
+    };
+    window.addEventListener('mousemove', mouseMoveListener);
+    window.addEventListener('mouseup', stopDragListener);
+  }
+
+  private windowContains(target: EventTarget | null): boolean {
+    return this.windowElement.nativeElement.contains(target);
   }
 }
