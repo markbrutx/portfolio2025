@@ -11,17 +11,21 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
 - **Dock**: macOS-style interactive dock for navigation.
 - **CV Download**: Download my CV with one click.
 - **Cursor as on Mac**: macOS-like interactive cursor for improved UX.
+- **Top Bar**: A top navigation bar with the following features:
+  - Toggle full screen.
+  - Reload page.
+  - Open GitHub source.
+  - Contact the author via email or Telegram.
+  - Close all windows.
+  - Display current time.
 
 ### ðŸš§ In Progress
 
 - **Quick View for About Me**: A bio modal with application opening capabilities and a planned personalized video introduction.
-- **Top Bar**: Adding a top navigation bar.
-- **Test Coverage**: Partial unit tests in place, aiming for full coverage.
 
 ### ðŸ“Œ Upcoming
 
 - **Scrollable Window for Static Content**: Embed static landing pages for modular portfolios.
-- **GitHub Source Access**: Add a link to the source code in the dock.
 - **Creative Experience Section**: Redesign to showcase companies and projects creatively.
 - **Long-Term Projects**:
   - **Light Novel Reader**: Release a demo and link it in the portfolio.
@@ -94,4 +98,3 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
   ```
 
 ---
-

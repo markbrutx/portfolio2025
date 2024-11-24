@@ -1,0 +1,19 @@
+<div
+  class="menu-item"
+  [ngClass]="{ 'apple': isAppleMenu }"
+  (mouseenter)="onMenuEnter()"
+  (mouseleave)="onMenuLeave($event)"
+  (appClickOutside)="closeMenu()"
+>
+  <button>
+    <ng-content></ng-content>
+  </button>
+  <div class="dropdown" *ngIf="menuStateService.isMenuActive(el.nativeElement)">
+    <ng-container *ngFor="let item of menuItems; let i = index">
+      <button class="menu-item-button" (click)="item.action()">
+        {{ item.label }}
+      </button>
+      <div class="divider" *ngIf="i < menuItems.length - 1"></div>
+    </ng-container>
+  </div>
+</div>

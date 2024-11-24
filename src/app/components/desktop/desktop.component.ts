@@ -11,6 +11,7 @@ import { AppID } from '../../shared/app-id.enum'
 import { PositionService } from '../../services/position.service'
 import { WindowComponent } from '../window/window.component'
 import { isPlatformBrowser, NgForOf, NgIf } from '@angular/common'
+import { OpenAppService } from '../../services/open-app.service'
 
 @Component({
   selector: 'app-desktop',
@@ -28,8 +29,14 @@ export class DesktopComponent implements AfterViewInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private positionService: PositionService,
+    private openAppService: OpenAppService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.openAppService.openApps$.subscribe((apps) => {
+      this.openApps = apps;
+      this.cdr.markForCheck();
+    });
+  }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -63,10 +70,10 @@ export class DesktopComponent implements AfterViewInit {
   }
 
   closeApp(appId: AppID): void {
-    const appIndex = this.openApps.findIndex((app) => app.id === appId)
+    const appIndex = this.openApps.findIndex((app) => app.id === appId);
     if (appIndex !== -1) {
-      this.openApps[appIndex].isOpen = false
-      this.cdr.markForCheck()
+      this.openApps.splice(appIndex, 1);
+      this.openAppService.setOpenApps(this.openApps);
     }
   }
 

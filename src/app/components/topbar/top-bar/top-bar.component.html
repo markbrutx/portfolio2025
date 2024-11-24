@@ -1,0 +1,13 @@
+<div class="top-bar">
+  <app-menu-item class="apple" [menuItems]="appleMenu" [isAppleMenu]="true">
+    <img src="assets/icons/apple.svg" alt="Apple" />
+  </app-menu-item>
+  <app-menu-item class="finder" [menuItems]="finderMenu">
+    <span class="finder-text">Finder</span>
+  </app-menu-item>
+  <app-menu-item class="help" [menuItems]="helpMenu">
+    Help
+  </app-menu-item>
+  <div class="spacer"></div>
+  <app-clock></app-clock>
+</div>

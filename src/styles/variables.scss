@@ -71,3 +71,17 @@ $cursor-working-bg: url('/assets/cursors/working-in-background.webp'), auto;
 $font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue',
   'Helvetica', 'Arial', sans-serif;
 $focus-outline: 0 0 0 3px hsla(210, 100%, 52%, 0.5);
+
+// Colors
+$color-text-dark: hsla(240, 3%, 11%, 1);
+$color-text-dark-light: hsla(240, 3%, 11%, 0.3);
+$color-hover-background: hsla(240, 3%, 11%, 0.1);
+$color-divider: $color-text-dark-light;
+$color-dropdown-bg: rgba(255, 255, 255, 0.3);
+$color-hover-highlight: hsl(211, 100%, 50%);
+$color-hover-text: hsl(0, 0%, 100%);
+
+// Top Bar Colors
+$top-bar-bg: rgba(255, 255, 255, 0.3);
+$top-bar-text: hsl(0, 0%, 11%);
+$top-bar-shadow: hsla(0, 0%, 0%, 0.1);
