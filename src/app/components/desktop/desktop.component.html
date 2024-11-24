@@ -2,8 +2,8 @@
   <div class="windows-area">
     <ng-container *ngFor="let app of openApps">
       <app-window
-        *ngIf="app.isOpen"
-        [appId]="app.id"
+        *ngIf="app.isOpen && app.config"
+        [config]="app.config!"
         [initialPosition]="getSafeInitialPosition(app)"
         (close)="closeApp(app.id)"
       ></app-window>

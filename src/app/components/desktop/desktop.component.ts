@@ -8,7 +8,7 @@ import {
   PLATFORM_ID,
   NgZone,
 } from '@angular/core';
-import { OpenApp, Position } from '../../models/desktop.models';
+import { Position, OpenApp } from '../../models/desktop.models';
 import { AppID } from '../../shared/app-id.enum';
 import { PositionService } from '../../services/position.service';
 import { WindowComponent } from '../window/window.component';
@@ -16,6 +16,7 @@ import { isPlatformBrowser, NgForOf, NgIf } from '@angular/common';
 import { OpenAppService } from '../../services/open-app.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import {DesktopAppRegistryService} from '../../services/desktop/desktop-app-registry.service';
 
 @Component({
   selector: 'app-desktop',
@@ -27,21 +28,23 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class DesktopComponent implements AfterViewInit, OnDestroy {
   openApps: OpenApp[] = [];
-  private readonly windowWidth = 500;
-  private readonly windowHeight = 400;
   private destroy$ = new Subject<void>();
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private positionService: PositionService,
     private openAppService: OpenAppService,
+    private appRegistry: DesktopAppRegistryService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone
   ) {
     this.openAppService.openApps$
       .pipe(takeUntil(this.destroy$))
       .subscribe((apps) => {
-        this.openApps = apps;
+        this.openApps = apps.map((app) => ({
+          ...app,
+          config: this.appRegistry.getAppConfig(app.id) ?? undefined,
+        }));
         this.cdr.markForCheck();
       });
   }
@@ -50,10 +53,7 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.ngZone.runOutsideAngular(() => {
         requestAnimationFrame(() => {
-          const centerPosition = this.positionService.getCenterPosition(
-            this.windowWidth,
-            this.windowHeight
-          );
+          const centerPosition = this.positionService.getCenterPosition(600, 400);
           this.ngZone.run(() => {
             this.openApp(AppID.AboutMe, centerPosition);
           });
@@ -68,6 +68,13 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
   }
 
   openApp(appId: AppID, initialPosition?: Position): void {
+    const appConfig = this.appRegistry.getAppConfig(appId);
+    if (!appConfig) {
+      // TODO Добавить сюда реализацию если нет окна
+      console.warn(`App config for ${appId} not found`);
+      return;
+    }
+
     const existingApp = this.openApps.find((app) => app.id === appId);
 
     if (existingApp) {
@@ -77,10 +84,16 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
         initialPosition ??
         this.positionService.getNextPosition(
           this.openApps,
-          this.windowWidth,
-          this.windowHeight
+          appConfig.width,
+          appConfig.height
         );
-      this.openApps.push({ id: appId, isOpen: true, initialPosition: position });
+
+      this.openApps.push({
+        id: appId,
+        isOpen: true,
+        initialPosition: position,
+        config: appConfig,
+      });
     }
 
     this.cdr.markForCheck();
@@ -90,7 +103,9 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
     const appIndex = this.openApps.findIndex((app) => app.id === appId);
     if (appIndex !== -1) {
       this.openApps.splice(appIndex, 1);
-      this.openAppService.setOpenApps(this.openApps);
+      this.openAppService.setOpenApps(
+        this.openApps.map(({ id, isOpen }) => ({ id, isOpen }))
+      );
     }
   }
 
@@ -98,8 +113,8 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
     return (
       app.initialPosition ??
       this.positionService.getCenterPosition(
-        this.windowWidth,
-        this.windowHeight
+        app.config?.width ?? 500,
+        app.config?.height ?? 400
       )
     );
   }

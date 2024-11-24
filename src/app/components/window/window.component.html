@@ -2,8 +2,8 @@
   class="window-container"
   [ngClass]="{ active: isActive, maximized: isMaximized }"
   [ngStyle]="{
-    width: isMaximized ? '100%' : width + 'px',
-    height: isMaximized ? 'calc(100vh - 2rem)' : height + 'px',
+    width: isMaximized ? '100%' : config.width + 'px',
+    height: isMaximized ? 'calc(100vh - 2rem)' : config.height + 'px'
   }"
   (mousedown)="activateWindow()"
   #window
@@ -14,9 +14,7 @@
       (maximize)="toggleMaximize()"
       (minimize)="minimizeWindow()"
     ></app-traffic-lights>
-    <div class="window-title">{{ defaultTitle }}</div>
+    <div class="window-title">{{ config.title }}</div>
   </div>
-  <div class="window-content">
-    <ng-content></ng-content>
-  </div>
+  <div class="window-content" #windowContent></div>
 </div>
