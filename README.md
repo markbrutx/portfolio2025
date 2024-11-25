@@ -23,7 +23,6 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. �
 
 ### 🚧 In Progress
 
-- **Enhanced Welcome Video**: Improving the welcome video with an interactive poster image for better user engagement.
 - **Scrollable Window for Static Content**: Developing a scrollable window to showcase the 'Experience' section effectively.
 
 ### 📌 Upcoming
