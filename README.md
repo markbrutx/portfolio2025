@@ -19,11 +19,12 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
   - Close all windows.
   - Display current time.
 - **About Me**: A bio modal with application opening capabilities and a planned personalized video introduction.
+- **Loading Screen**: A seamless, Apple-style loading screen to ensure all elements are preloaded for a smooth user experience.
 
 ### ðŸš§ In Progress
 
-- **Loading Screen**: Implementing a seamless, Apple-style loading screen to ensure all elements are preloaded for a smooth user experience.
-
+- **Enhanced Welcome Video**: Improving the welcome video with an interactive poster image for better user engagement.
+- **Scrollable Window for Static Content**: Developing a scrollable window to showcase the 'Experience' section effectively.
 
 ### ðŸ“Œ Upcoming
 
@@ -76,26 +77,31 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
 ## ðŸ“¦ Scripts
 
 - **Start**:
+
   ```bash
   npm start
   ```
 
 - **Build**:
+
   ```bash
   npm run build
   ```
 
 - **Test**:
+
   ```bash
   npm test
   ```
 
 - **Lint**:
+
   ```bash
   npm run lint
   ```
 
 - **Format**:
+
   ```bash
   npm run format
   ```
