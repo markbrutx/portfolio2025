@@ -18,14 +18,17 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
   - Contact the author via email or Telegram.
   - Close all windows.
   - Display current time.
+- **About Me**: A bio modal with application opening capabilities and a planned personalized video introduction.
 
 ### ðŸš§ In Progress
 
-- **Quick View for About Me**: A bio modal with application opening capabilities and a planned personalized video introduction.
+- **Loading Screen**: Implementing a seamless, Apple-style loading screen to ensure all elements are preloaded for a smooth user experience.
+
 
 ### ðŸ“Œ Upcoming
 
-- **Scrollable Window for Static Content**: Embed static landing pages for modular portfolios.
+- **Scrollable Window for Static Content**:
+- **Loading Screen**: A seamless loading screen to ensure all elements are properly preloaded for a smooth user experience. Embed static landing pages for modular portfolios.
 - **Creative Experience Section**: Redesign to showcase companies and projects creatively.
 - **Long-Term Projects**:
   - **Light Novel Reader**: Release a demo and link it in the portfolio.
@@ -98,3 +101,4 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
   ```
 
 ---
+
