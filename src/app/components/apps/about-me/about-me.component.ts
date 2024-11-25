@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, HostListener, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NgIf } from '@angular/common';
 
 @Component({
@@ -7,13 +7,16 @@ import { NgIf } from '@angular/common';
   styleUrls: ['./about-me.component.scss'],
   standalone: true,
   imports: [NgIf],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AboutMeComponent implements AfterViewInit {
   @ViewChild('video', { static: true }) videoElement!: ElementRef<HTMLVideoElement>;
 
-  showWelcomeButton = true;
+  showWelcomeButton = false;
   emojiAnimating = false;
   private userInteracted = false;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     this.tryAutoPlay();
@@ -24,9 +27,12 @@ export class AboutMeComponent implements AfterViewInit {
 
     const playPromise = video.play();
     if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        console.error('Autoplay was blocked by the browser.');
-      });
+      playPromise
+        .catch(() => {
+          console.error('Autoplay was blocked by the browser.');
+          this.showWelcomeButton = true;
+          this.cdr.markForCheck();
+        });
     }
   }
 
@@ -34,8 +40,9 @@ export class AboutMeComponent implements AfterViewInit {
   handleUserInteraction(): void {
     if (!this.userInteracted) {
       this.userInteracted = true;
-      this.showWelcomeButton = false;
       this.playVideo();
+      this.showWelcomeButton = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -45,6 +52,7 @@ export class AboutMeComponent implements AfterViewInit {
     setTimeout(() => {
       this.showWelcomeButton = false;
       this.playVideo();
+      this.cdr.markForCheck();
     }, 1500);
   }
 
