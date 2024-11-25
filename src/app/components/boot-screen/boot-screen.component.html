@@ -1,0 +1,19 @@
+<div class="splash-screen" [class.hidden]="splashScreenHidden">
+  <div class="logo">
+    <img src="/assets/icons/apple-white.svg" alt="Apple Logo" />
+  </div>
+
+  <div
+    class="progress"
+    role="progressbar"
+    [attr.aria-valuenow]="progress"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuetext="Loading up macOS Web"
+  >
+    <div
+      class="indicator"
+      [style.transform]="'translateX(' + progress + '%)'"
+    ></div>
+  </div>
+</div>

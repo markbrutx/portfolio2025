@@ -1,4 +1,11 @@
-<div class="app-container">
+<app-boot-screen
+  *ngIf="!userReady"
+  (userReady)="userReady = true"
+></app-boot-screen>
+<div
+  class="app-container"
+  [class.visible]="userReady"
+>
   <app-top-bar></app-top-bar>
   <app-dock-panel (appOpened)="desktop.openApp($event)"></app-dock-panel>
   <app-desktop #desktop></app-desktop>
