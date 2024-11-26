@@ -20,16 +20,14 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
   - Display current time.
 - **About Me**: A bio modal with application opening capabilities and a planned personalized video introduction.
 - **Loading Screen**: A seamless, Apple-style loading screen to ensure all elements are preloaded for a smooth user experience.
+- **Skills Component**: A standalone component written entirely in Angular 19 syntax, featuring a comprehensive showcase of skills.
 
 ### ðŸš§ In Progress
 
-- **Scrollable Window for Static Content**: Developing a scrollable window to showcase the 'Experience' section effectively.
+- **Experience Section**: A unified enhancement to the 'Experience' section, including scrollable content, creative redesign, and richer interactivity to effectively showcase projects and companies.
 
 ### ðŸ“Œ Upcoming
 
-- **Scrollable Window for Static Content**:
-- **Loading Screen**: A seamless loading screen to ensure all elements are properly preloaded for a smooth user experience. Embed static landing pages for modular portfolios.
-- **Creative Experience Section**: Redesign to showcase companies and projects creatively.
 - **Long-Term Projects**:
   - **Light Novel Reader**: Release a demo and link it in the portfolio.
   - **Resume Enhancer**: Link the completed project in the portfolio as a demo.
@@ -76,34 +74,26 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
 ## ðŸ“¦ Scripts
 
 - **Start**:
-
   ```bash
   npm start
   ```
 
 - **Build**:
-
   ```bash
   npm run build
   ```
 
 - **Test**:
-
   ```bash
   npm test
   ```
 
 - **Lint**:
-
   ```bash
   npm run lint
   ```
 
 - **Format**:
-
   ```bash
   npm run format
   ```
-
----
-
