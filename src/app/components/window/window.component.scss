@@ -6,14 +6,14 @@
   position: absolute;
   max-width: 100%;
   max-height: 100%;
-  overflow: hidden;
   border-radius: #{vars.$window-border-radius};
   box-shadow: var(--elevated-shadow);
   background-color: #{vars.$window-bg-color};
   will-change: transform, box-shadow;
   transition: transform 0ms, width 0.3s ease, height 0.3s ease;
   z-index: 99;
-
+  display: flex;
+  flex-direction: column;
 
   &.active {
     box-shadow: var(--active-shadow);
@@ -37,6 +37,7 @@
   background-color: #{vars.$window-header-bg-color};
   border-bottom: 1px solid #{vars.$window-header-border-color};
   user-select: none;
+  flex-shrink: 0;
 
   &:active {
     cursor: grabbing;
@@ -53,8 +54,12 @@
 
 .window-content {
   flex: 1;
-  overflow: auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   background-color: #{vars.$window-content-bg-color};
+  position: relative;
+  height: 100%;
 }
 
 app-traffic-lights {

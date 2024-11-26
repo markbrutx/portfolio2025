@@ -1,10 +1,100 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  computed,
+  signal,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+  inject,
+  PLATFORM_ID
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+
+import { SKILLS_DATA } from './data/skills.data';
+import { SkillCardComponent } from './components/skill-card/skill-card.component';
+import { CategoryViewModel } from './models/skills.model';
+import { ExperienceLevel, EXPERIENCE_THRESHOLDS } from './constants/experience-levels.enum';
+
+const INTERSECTION_THRESHOLD = 0.1;
 
 @Component({
   selector: 'app-skills',
-  imports: [],
-  templateUrl: './skills.component.html',
   standalone: true,
-  styleUrl: './skills.component.scss',
+  imports: [CommonModule, SkillCardComponent],
+  templateUrl: './skills.component.html',
+  styleUrls: ['./skills.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'skills-component',
+    '[class.is-scrolled]': 'isScrolled()'
+  }
 })
-export class SkillsComponent {}
+export class SkillsComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('skillsContainer', { static: true })
+  private readonly skillsContainer!: ElementRef<HTMLElement>;
+
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly observer = signal<IntersectionObserver | null>(null);
+  private readonly skillsData = signal(SKILLS_DATA);
+
+  protected readonly isScrolled = signal(false);
+  protected readonly categories = computed<CategoryViewModel[]>(() =>
+    Object.entries(this.skillsData()).map(([key, category]) => ({
+      key,
+      category: {
+        ...category,
+        skills: category.skills.map(skill => ({
+          ...skill,
+          experienceLevel: this.getExperienceLevel(skill.years)
+        }))
+      }
+    }))
+  );
+
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.initIntersectionObserver();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.observeSkillCards();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.observer()?.disconnect();
+  }
+
+  private getExperienceLevel(years: number): ExperienceLevel {
+    if (years >= EXPERIENCE_THRESHOLDS.Expert) return ExperienceLevel.Expert;
+    if (years >= EXPERIENCE_THRESHOLDS.Advanced) return ExperienceLevel.Advanced;
+    if (years >= EXPERIENCE_THRESHOLDS.Intermediate) return ExperienceLevel.Intermediate;
+    return ExperienceLevel.Beginner;
+  }
+
+  private initIntersectionObserver(): void {
+    this.observer.set(new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            this.observer()?.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: INTERSECTION_THRESHOLD }
+    ));
+  }
+
+  private observeSkillCards(): void {
+    if (!this.observer()) return;
+
+    this.skillsContainer.nativeElement
+      .querySelectorAll('.skill-card')
+      .forEach(card => this.observer()?.observe(card));
+  }
+}

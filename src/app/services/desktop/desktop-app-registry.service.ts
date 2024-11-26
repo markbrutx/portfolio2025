@@ -21,8 +21,8 @@ export class DesktopAppRegistryService {
       id: AppID.Skills,
       title: 'Skills',
       allowMaximize: true,
-      width: 500,
-      height: 300,
+      width: 1200,
+      height: 800,
       component: SkillsComponent,
     },
   ];

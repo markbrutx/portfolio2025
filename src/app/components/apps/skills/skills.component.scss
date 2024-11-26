@@ -1,0 +1,107 @@
+:host {
+  --header-height: 3rem;
+  --content-padding: 2rem;
+  --content-padding-vertical: 2rem;
+  --content-padding-horizontal: 8rem;
+  --category-gap: 2rem;
+  --grid-gap: 1rem;
+  --icon-size: 2.5rem;
+  --radius: 12px;
+  --transition: cubic-bezier(0.4, 0, 0.2, 1);
+
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.skills-container {
+  width: 100%;
+  height: 100%;
+  padding: var(--content-padding-vertical) var(--content-padding-horizontal);
+  position: relative;
+  overflow: auto;
+  overscroll-behavior: contain;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: calc(var(--radius) / 3);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.skills-content {
+  display: grid;
+  gap: var(--category-gap);
+  position: relative;
+  min-height: 100%;
+}
+
+.skill-category {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--category-gap) * 0.75);
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: calc(var(--content-padding) * 0.25) 0;
+}
+
+.category-icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius);
+  transition: all 0.3s var(--transition);
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+    transform: scale(1.05);
+  }
+}
+
+.category-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #007CF0, #00DFD8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.skills-grid {
+  display: grid;
+  gap: var(--grid-gap);
+  grid-template-columns: repeat(2, 1fr);
+  position: relative;
+  transition: all 0.3s var(--transition);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,1 +1,34 @@
-<p>skills works!</p>
+<div
+  #skillsContainer
+  class="skills-container">
+  <div class="skills-content">
+    @for (category of categories(); track category.key) {
+      <div class="skill-category">
+        <div class="category-header">
+          <span
+            class="category-icon"
+            [attr.aria-label]="category.category.title + ' category'">
+            {{category.category.icon}}
+          </span>
+          <h3
+            class="category-title"
+            [id]="'category-' + category.key">
+            {{category.category.title}}
+          </h3>
+        </div>
+
+        <div
+          class="skills-grid"
+          role="list"
+          [attr.aria-labelledby]="'category-' + category.key">
+          @for (skill of category.category.skills; track skill.name; let idx = $index) {
+            <app-skill-card
+              class="skill-card"
+              [skill]="skill"
+              role="listitem" />
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

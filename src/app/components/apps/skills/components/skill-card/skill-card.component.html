@@ -1,0 +1,64 @@
+<div class="card-container" (click)="toggleExpand()">
+  <div class="card-header">
+    <div class="skill-info">
+      <span class="skill-icon" [attr.aria-label]="skill.name + ' icon'">
+        {{skill.icon}}
+      </span>
+      <span class="skill-name">{{skill.name}}</span>
+    </div>
+
+    <span class="experience-years" [class]="skill.years | experienceClass">
+      {{skill.years}}+ years
+    </span>
+  </div>
+
+  <div class="progress-container" aria-label="Skill level">
+    <div class="progress-track">
+      <div class="progress-bar"
+           [style.width.%]="skill.level"
+           [attr.data-level]="skill.level + '%'"
+           [attr.aria-valuenow]="skill.level"
+           aria-valuemin="0"
+           aria-valuemax="100">
+      </div>
+    </div>
+  </div>
+
+  <div class="details-button" [class.active]="isExpanded()">
+    {{isExpanded() ? 'Show less' : 'Show more'}}
+  </div>
+
+  @if (isExpanded()) {
+    <div class="expanded-content">
+      @for (exp of skill.experiences; track exp.company; let isLast = $last) {
+        <div class="experience-item">
+          <div class="exp-header">
+            <h4 id="{{exp.company}}" class="company-name">{{exp.company}}</h4>
+            <span class="period">{{exp.period}}</span>
+          </div>
+
+          {{exp.details}}
+
+          <div class="projects">
+            @for (project of exp.projects; track project) {
+              <span class="project-tag">{{project}}</span>
+            }
+          </div>
+
+          <div class="metrics">
+            @for (metric of exp.metrics; track metric.label) {
+              <div class="metric">
+                <div class="metric-value">{{metric.value}}</div>
+                <div class="metric-label">{{metric.label}}</div>
+              </div>
+            }
+          </div>
+
+          @if (!isLast) {
+            <div class="separator"></div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

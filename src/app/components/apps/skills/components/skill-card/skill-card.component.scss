@@ -1,0 +1,238 @@
+@use 'sass:list';
+@use 'sass:color';
+
+@mixin glassmorphism {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+@mixin hover-transform {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease-in-out;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background-color: rgba(250, 250, 250, 1);
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host {
+  --card-padding: 1.5rem;
+  --card-radius: 1rem;
+  --icon-size: 2rem;
+  --progress-height: 10px;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  display: block;
+}
+
+.card-container {
+  padding: var(--card-padding);
+  border-radius: var(--card-radius);
+  @include glassmorphism;
+  @include hover-transform;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-block-end: 2rem;
+}
+
+.skill-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.skill-icon {
+  @include flex-center;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  font-size: 1.25rem;
+  transition: background-color 0.3s ease;
+
+  .card-container:hover & {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.progress-container {
+  margin: 20px 0;
+}
+
+.progress-track {
+  height: var(--progress-height);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: calc(var(--progress-height) / 2);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #007CF0, #00DFD8);
+  border-radius: calc(var(--progress-height) / 2);
+  transition: width 0.5s var(--transition-timing);
+}
+
+.experience-years {
+  font-size: 0.9rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-bottom: 12px;
+
+  &.experience-beginner {
+    background-color: #f3f4f6;
+    color: #6b7280;
+  }
+
+  &.experience-intermediate {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    color: white;
+  }
+
+  &.experience-advanced {
+    background: linear-gradient(135deg, #818cf8, #6366f1);
+    color: white;
+  }
+
+  &.experience-expert {
+    background: linear-gradient(135deg, #c084fc, #a855f7);
+    color: white;
+  }
+}
+
+.details-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.85);
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.15);
+    color: #007bff;
+  }
+
+  &.active {
+    background: rgba(0, 123, 255, 0.15);
+    color: #007bff;
+  }
+}
+
+.expanded-content {
+  margin-top: 28px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  :host.expanded & {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.experience-item {
+  margin-bottom: 28px;
+  padding: 18px;
+  background: rgba(245, 245, 245, 0.8);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(240, 240, 240, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.exp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.company-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.period {
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.projects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+  margin-bottom: 24px;
+}
+
+.project-tag {
+  padding: 8px 16px;
+  background: rgba(0, 123, 255, 0.15);
+  color: #007bff;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(0, 123, 255, 0.2);
+    transform: translateY(-2px);
+  }
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.metric {
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateY(-3px);
+  }
+}
+
+.metric-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #007bff;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.separator {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 28px 0;
+}
