@@ -19,23 +19,23 @@ const createSkillsData = (): Readonly<SkillsData> => ({
           {
             company: "ht.kz",
             period: "2020 - 2024",
-            details: "Led TypeScript/Angular development. Integrated WhatsApp into CRM and implemented Amplitude tracking. Personally introduced the CRM system to sales points, ensuring adoption by staff and management.",
-            projects: ["CRM System", "Analytics Dashboard", "Recommendation Service"],
+            details: "Led TypeScript/Angular development from scratch. Introduced and implemented a CRM system across sales points, collaborating with sales managers for adoption. Built numerous features such as chats, interaction histories, notifications, and voice messaging. Developed ZenMode to streamline sales workflows and reduce cognitive load, and mentored junior developers.",
+            projects: ["CRM System", "ZenMode", "Internal Messenger"],
             metrics: [
               { label: "Conversion Rate", value: "~22%" },
-              { label: "Render Time", value: "~75%" },
-              { label: "Engagement Growth", value: "~18%" },
+              { label: "Cognitive Load Reduction", value: "Significant" },
+              { label: "Feature Adoption", value: "~95%" },
               { label: "Bug Reduction", value: "~35%" }
             ]
           },
           {
             company: "Sigli/Copaco.com",
             period: "2024 - Present",
-            details: "Refactored legacy codebase and implemented new features to enhance user experience and maintainability.",
-            projects: ["E-commerce Platform", "Admin Dashboard"],
+            details: "Redesigned user interfaces for over 20 sections of the e-commerce platform, strictly adhering to style guides with pixel-perfect precision.",
+            projects: ["E-commerce Platform Redesign"],
             metrics: [
-              { label: "Code Refactored", value: "100K+ lines" },
-              { label: "Performance Gain", value: "~35%" }
+              { label: "Pages Redesigned", value: "20+" },
+              { label: "Guideline Compliance", value: "100%" }
             ]
           }
         ],
@@ -49,7 +49,7 @@ const createSkillsData = (): Readonly<SkillsData> => ({
           {
             company: "NDA Companies",
             period: "2018 - 2019",
-            details: "Built accurate web scrapers and scalable APIs.",
+            details: "Built accurate web scrapers and scalable APIs, and developed Telegram bots to streamline content posting.",
             projects: ["Web Scrapers", "REST APIs", "Telegram Bots"],
             metrics: [
               { label: "Data Accuracy", value: "99.5%" },
@@ -73,21 +73,23 @@ const createSkillsData = (): Readonly<SkillsData> => ({
           {
             company: "ht.kz",
             period: "2020 - 2024",
-            details: "Led Angular project development from scratch. Created a fully functional product that generated revenue and was adopted by five major brands.",
-            projects: ["WhatsApp CRM Integration", "Analytics Dashboard", "Recommendation Service"],
+            details: "Led Angular development for CRM and desktop applications, working closely with UI/UX designers and adhering to strict style guides. Integrated features like chats, ZenMode, and voice messaging.",
+            projects: ["CRM System", "ZenMode", "Internal Messenger"],
             metrics: [
-              { label: "Customer Journey Visibility", value: "~15%" },
-              { label: "Revenue Impact", value: "Direct monetization" }
+              { label: "Conversion Rate", value: "~22%" },
+              { label: "Cognitive Load Reduction", value: "Significant" },
+              { label: "Feature Adoption", value: "~95%" },
+              { label: "Bug Reduction", value: "~35%" }
             ]
           },
           {
             company: "Sigli/Copaco.com",
             period: "2024 - Present",
-            details: "Maintained large-scale webshop and implemented UX improvements.",
+            details: "Redesigned e-commerce platform UI/UX and implemented improvements to user satisfaction.",
             projects: ["E-commerce Platform", "Component Library"],
             metrics: [
-              { label: "Code Quality", value: "~38%" },
-              { label: "User Satisfaction", value: "~28%" }
+              { label: "Pages Redesigned", value: "20+" },
+              { label: "Guideline Compliance", value: "100%" }
             ]
           }
         ],
@@ -101,8 +103,8 @@ const createSkillsData = (): Readonly<SkillsData> => ({
           {
             company: "Parakozm",
             period: "2019 - 2020",
-            details: "Built scalable LMS platform using MERN stack.",
-            projects: ["Learning Management System", "Interactive Exercises"],
+            details: "Developed a scalable LMS platform with MERN stack, enhancing user engagement and system scalability.",
+            projects: ["Learning Management System"],
             metrics: [
               { label: "Session Duration", value: "~18%" },
               { label: "Scalability", value: "~50%" }
@@ -125,8 +127,8 @@ const createSkillsData = (): Readonly<SkillsData> => ({
           {
             company: "ht.kz",
             period: "2020 - 2024",
-            details: "Implemented and maintained Backend-for-Frontend (BFF) services. Supported Node.js server for telephony systems, focusing on fixes and minor enhancements.",
-            projects: ["BFF Services", "Telephony Integration"],
+            details: "Implemented and maintained BFF services and backend systems for CRM and desktop applications, focusing on integration and performance.",
+            projects: ["BFF Services", "CRM Backend"],
             metrics: []
           }
         ],
@@ -140,8 +142,8 @@ const createSkillsData = (): Readonly<SkillsData> => ({
           {
             company: "NDA Companies",
             period: "2018 - 2019",
-            details: "Created scalable REST APIs and services.",
-            projects: ["REST API Platform", "Data Processing Service"],
+            details: "Built scalable APIs and backend systems for data processing.",
+            projects: ["API Development", "Data Processing"],
             metrics: [
               { label: "API Performance", value: "~65%" },
               { label: "Data Accuracy", value: "99.5%" }
@@ -164,8 +166,8 @@ const createSkillsData = (): Readonly<SkillsData> => ({
           {
             company: "B2B Contract (Part-Time Projects)",
             period: "2021",
-            details: "Developed cross-platform games and applications with a focus on gamified experiences.",
-            projects: ["Business Tycoon Game", "Task Manager RPG"],
+            details: "Developed cross-platform applications and gamified tools.",
+            projects: ["Gamified Task Manager"],
             metrics: []
           }
         ],
@@ -175,5 +177,4 @@ const createSkillsData = (): Readonly<SkillsData> => ({
     ]
   }
 });
-
 export const SKILLS_DATA = createSkillsData();

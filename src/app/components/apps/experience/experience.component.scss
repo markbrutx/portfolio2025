@@ -1,0 +1,68 @@
+:host {
+  display: block;
+  min-block-size: 100vh;
+  background: #f1f5f9;
+  padding-block: 2rem;
+  color: #1e293b;
+  overflow-x: hidden;
+}
+
+.timeline-container {
+  position: relative;
+  padding: 2rem 8rem;
+
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.8),
+        transparent
+    );
+    pointer-events: none;
+  }
+}
+
+.timeline-title {
+  position: relative;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  font-weight: 700;
+  margin-block-end: 3rem;
+  background: linear-gradient(to right, #2563eb, #9333ea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.timeline-items {
+  position: relative;
+  padding-inline-end: 12rem;
+  isolation: isolate;
+
+  @media (max-width: 768px) {
+    padding-inline-end: 4rem;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  :host {
+    padding-block: 1rem;
+  }
+
+  .timeline-container {
+    padding-inline: 1rem;
+  }
+}

@@ -1,0 +1,51 @@
+@if (experienceSignal(); as experience) {
+  <div class="experience-item" [class.fade-in]="true">
+    <div
+      class="experience-card"
+      [class.active]="experience.isActive"
+      [ngStyle]="cardStyles()"
+      (click)="cardClick.emit()"
+    >
+      <div class="timeline-node"></div>
+
+      <div class="card-header">
+        <div class="icon-container">
+          <img
+            [src]="experience.iconPath"
+            [alt]="experience.company + ' icon'"
+            class="company-icon"
+          />
+        </div>
+
+        <div class="company-info">
+          <h3>{{experience.company}}</h3>
+          <div class="role">{{experience.role}}</div>
+          <div class="location">{{experience.location}}</div>
+        </div>
+      </div>
+
+      <div class="stack-tags">
+        @for (tech of experience.stack; track tech) {
+          <span class="stack-tag">{{tech}}</span>
+        }
+      </div>
+
+      <div class="achievements">
+        @for (achievement of experience.achievements; track achievement; let i = $index) {
+          <div
+            class="achievement-item"
+            [style.transition-delay]="achievementDelay(i)"
+          >
+            <span class="achievement-dot"></span>
+            <span class="achievement-text">{{achievement}}</span>
+          </div>
+        }
+      </div>
+
+      <div class="card-footer">
+        <span>{{experience.period.start}} - {{experience.period.end}}</span>
+        <span>Click to see achievements</span>
+      </div>
+    </div>
+  </div>
+}

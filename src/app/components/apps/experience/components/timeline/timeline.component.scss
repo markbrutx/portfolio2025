@@ -1,0 +1,73 @@
+:host {
+  display: block;
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 12rem;
+}
+
+.timeline {
+  position: relative;
+  block-size: 100%;
+  padding-block: 2rem;
+}
+
+.timeline-line {
+  position: absolute;
+  inset-block: 2rem;
+  inset-inline-end: 6rem;
+  inline-size: 2px;
+  background: linear-gradient(
+      to bottom,
+      #93c5fd,
+      #d8b4fe,
+      #fbcfe8
+  );
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        #2563eb,
+        #9333ea,
+        #db2777
+    );
+    opacity: 0.5;
+    animation: pulse 2s infinite;
+  }
+}
+
+.timeline-years {
+  position: absolute;
+  inset-inline-end: 8rem;
+  inset-block: 2rem;
+  block-size: calc(100% - 4rem);
+  inline-size: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.year-marker {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.3s ease;
+  cursor: default;
+
+  &:hover {
+    color: #2563eb;
+    transform: translateX(-0.5rem);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}

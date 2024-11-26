@@ -1,0 +1,16 @@
+<section class="section timeline-container" [ngStyle]="containerStyle()">
+  <h1 class="timeline-title">Experience Timeline</h1>
+
+  <div class="timeline-items">
+    @for (experience of experiences().experiences; track experience.id) {
+      <app-experience-card
+        [experience]="experience"
+        (cardClick)="toggleExperience(experience.id)"
+      />
+    }
+  </div>
+
+  <app-timeline
+    [years]="years"
+  />
+</section>

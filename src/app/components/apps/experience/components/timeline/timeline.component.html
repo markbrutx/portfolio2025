@@ -1,0 +1,13 @@
+<div class="timeline">
+  <div class="timeline-line">
+    <div class="timeline-line-gradient" ></div>
+  </div>
+
+  <div class="timeline-years">
+    @for (year of yearsSignal(); track year) {
+      <div class="year-marker">
+        {{year}}
+      </div>
+    }
+  </div>
+</div>
