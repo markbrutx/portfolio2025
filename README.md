@@ -18,9 +18,9 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
   - Contact the author via email or Telegram.
   - Close all windows.
   - Display current time.
-- **About Me**: A bio modal with application opening capabilities and a planned personalized video introduction.
+- **About Me Section**: A bio modal with application opening capabilities and a planned personalized video introduction.
 - **Loading Screen**: A seamless, Apple-style loading screen to ensure all elements are preloaded for a smooth user experience.
-- **Skills Component**: A standalone component written entirely in Angular 19 syntax, featuring a comprehensive showcase of skills.
+- **Skills Section**: A standalone component written entirely in Angular 19 syntax, featuring a comprehensive showcase of skills.
 - **Experience Section**: Interactive showcase of professional experience with modern Angular features and smooth scrolling functionality.
 
 ### ðŸš§ In Progress
