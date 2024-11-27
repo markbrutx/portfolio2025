@@ -15,7 +15,5 @@
     {{ label() }}
   </div>
 
-  @if (isActive()) {
-    <div class="active-indicator"></div>
-  }
+  <div class="active-indicator" [class.visible]="isActive()"></div>
 </div>

@@ -11,7 +11,7 @@ import {
   ViewChildren,
   QueryList,
 } from '@angular/core'
-import { fromEvent, Subject, takeUntil, throttleTime } from 'rxjs'
+import { fromEvent, Subject, takeUntil, throttleTime, debounceTime } from 'rxjs'
 import { isPlatformBrowser } from '@angular/common'
 import { DockItemComponent } from '../dock-item/dock-item.component'
 import { FileDownloadService } from '../../services/file-download.service'
@@ -20,6 +20,7 @@ import { DockItemsService } from '../../services/dock/dock-items.service'
 import { DockItem } from '../../models/dock-item.model'
 import { calculateScaleFactor, isMouseInsideRect } from '../../utils/dock-panel.utils'
 import { AppStateService } from '../../state/app-state.service'
+import { OpenAppService } from '../../services/open-app.service'
 
 @Component({
   selector: 'app-dock-panel',
@@ -30,34 +31,43 @@ import { AppStateService } from '../../state/app-state.service'
   imports: [DockItemComponent],
 })
 export class DockPanelComponent implements AfterViewInit, OnDestroy {
-  protected readonly dockPanel = viewChild.required<ElementRef>('dockPanel')
+  protected readonly dockPanel = viewChild.required<ElementRef>('dockPanel');
 
   @ViewChildren('dockItem', { read: ElementRef })
-  private readonly dockItemElements!: QueryList<ElementRef>
+  private readonly dockItemElements!: QueryList<ElementRef>;
 
-  protected readonly appOpened = output<AppID>()
+  protected readonly appOpened = output<AppID>();
 
-  private readonly destroy$ = new Subject<void>()
-  private readonly platformId = inject(PLATFORM_ID)
-  private readonly fileDownloadService = inject(FileDownloadService)
-  private readonly dockItemsService = inject(DockItemsService)
-  private readonly appStateService = inject(AppStateService)
+  private readonly destroy$ = new Subject<void>();
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly fileDownloadService = inject(FileDownloadService);
+  private readonly dockItemsService = inject(DockItemsService);
+  private readonly appStateService = inject(AppStateService);
+  private readonly openAppService = inject(OpenAppService);
 
-  protected readonly dockItems = signal<ReadonlyArray<DockItem>>(this.dockItemsService.getDockItems())
-  protected readonly isDragging = signal(false)
-  protected readonly isMaximizedWindow = signal(false)
+  protected readonly dockItems = signal<ReadonlyArray<DockItem>>([]);
+  protected readonly isDragging = signal(false);
+  protected readonly isMaximizedWindow = signal(false);
+  private readonly isScalingActive = signal(false);
+  private resetTimeout: number | null = null;
 
   constructor() {
+    this.dockItemsService.dockItems$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(items => {
+        this.dockItems.set(items);
+      });
+
     effect(() => {
       this.appStateService.state$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
-        this.isDragging.set(state.isDragging)
-        this.isMaximizedWindow.set(!!state.maximizedWindowId)
+        this.isDragging.set(state.isDragging);
+        this.isMaximizedWindow.set(!!state.maximizedWindowId);
 
         if (state.isDragging) {
-          this.resetDockItemScales()
+          this.resetDockItemScales();
         }
-      })
-    })
+      });
+    });
   }
 
   protected shouldShowDivider(index: number): boolean {
@@ -71,15 +81,19 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.resetTimeout) {
+      window.clearTimeout(this.resetTimeout);
+    }
     this.destroy$.next()
     this.destroy$.complete()
   }
 
   protected async openApp(appId: AppID): Promise<void> {
     if (appId === AppID.CV) {
-      await this.handleCVDownload()
+      await this.handleCVDownload();
     } else {
-      this.appOpened.emit(appId)
+      this.openAppService.openApp(appId);
+      this.appOpened.emit(appId);
     }
   }
 
@@ -92,29 +106,68 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   }
 
   private setupListeners(): void {
-    const dockPanelElement = this.dockPanel().nativeElement
+    const dockPanelElement = this.dockPanel().nativeElement;
 
     fromEvent(dockPanelElement, 'mouseleave')
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(100)
+      )
       .subscribe(() => {
-        this.resetDockItemScales()
-      })
+        this.handleMouseLeave();
+      });
 
     fromEvent<MouseEvent>(window, 'mousemove')
-      .pipe(takeUntil(this.destroy$),  throttleTime(16))
+      .pipe(
+        takeUntil(this.destroy$),
+        throttleTime(16)
+      )
       .subscribe((event) => {
         if (!this.isDragging()) {
-          this.calculateScales(event.clientX, event.clientY)
+          this.handleMouseMove(event.clientX, event.clientY);
         }
-      })
+      });
+  }
+
+  private handleMouseMove(mouseX: number, mouseY: number): void {
+    const dockRect = this.dockPanel().nativeElement.getBoundingClientRect();
+
+    if (!isMouseInsideRect(mouseX, mouseY, dockRect)) {
+      if (this.isScalingActive()) {
+        this.handleMouseLeave();
+      }
+      return;
+    }
+
+    this.isScalingActive.set(true);
+    if (this.resetTimeout) {
+      window.clearTimeout(this.resetTimeout);
+      this.resetTimeout = null;
+    }
+
+    this.calculateScales(mouseX, mouseY);
+  }
+
+  private handleMouseLeave(): void {
+    if (this.isScalingActive()) {
+      if (this.resetTimeout) {
+        window.clearTimeout(this.resetTimeout);
+      }
+
+      this.resetTimeout = window.setTimeout(() => {
+        this.resetDockItemScales();
+        this.isScalingActive.set(false);
+        this.resetTimeout = null;
+      }, 100) as unknown as number;
+    }
   }
 
   private calculateScales(mouseX: number, mouseY: number): void {
     const dockRect = this.dockPanel().nativeElement.getBoundingClientRect()
 
     if (!dockRect || !isMouseInsideRect(mouseX, mouseY, dockRect)) {
-      this.resetDockItemScales()
-      return
+      this.handleMouseLeave();
+      return;
     }
 
     const updatedDockItems = [...this.dockItems()].map((item, index) => {
@@ -132,8 +185,8 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   }
 
   private resetDockItemScales(): void {
-    const resetItems = this.dockItems().map(item => ({ ...item, scale: 1 }))
-    this.dockItems.set(resetItems)
+    const resetItems = this.dockItems().map(item => ({ ...item, scale: 1 }));
+    this.dockItems.set(resetItems);
   }
 
   private async downloadCV(): Promise<void> {

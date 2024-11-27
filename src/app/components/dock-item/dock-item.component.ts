@@ -17,7 +17,7 @@ export class DockItemComponent {
   readonly iconSrc = input.required<string>();
   readonly label = input.required<string>();
   readonly index = input.required<number>();
-  readonly isActive = input<boolean>();
+  readonly isActive = input<boolean>(true);
   readonly scale = input.required<number>();
   readonly clicked = output<void>()
 

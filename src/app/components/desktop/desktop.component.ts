@@ -70,25 +70,20 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
   openApp(appId: AppID, initialPosition?: Position): void {
     const appConfig = this.appRegistry.getAppConfig(appId);
     if (!appConfig) {
-      // TODO Добавить сюда реализацию если нет окна
       console.warn(`App config for ${appId} not found`);
       return;
     }
 
-    const existingApp = this.openApps.find((app) => app.id === appId);
+    const position = initialPosition ??
+      this.positionService.getNextPosition(this.openApps, appConfig.width, appConfig.height);
 
-    if (existingApp) {
-      existingApp.isOpen = true;
+    const updatedApps = [...this.openApps];
+    const existingAppIndex = updatedApps.findIndex(app => app.id === appId);
+
+    if (existingAppIndex !== -1) {
+      updatedApps[existingAppIndex].isOpen = true;
     } else {
-      const position =
-        initialPosition ??
-        this.positionService.getNextPosition(
-          this.openApps,
-          appConfig.width,
-          appConfig.height
-        );
-
-      this.openApps.push({
+      updatedApps.push({
         id: appId,
         isOpen: true,
         initialPosition: position,
@@ -96,9 +91,10 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
       });
     }
 
+    this.openAppService.setOpenApps(updatedApps);
+    this.openApps = updatedApps;
     this.cdr.markForCheck();
   }
-
   closeApp(appId: AppID): void {
     const appIndex = this.openApps.findIndex((app) => app.id === appId);
     if (appIndex !== -1) {

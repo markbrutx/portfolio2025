@@ -1,22 +1,43 @@
-import { Injectable } from '@angular/core';
-import { DockItem } from '../../models/dock-item.model'
-import { AppID } from '../../shared/app-id.enum'
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable, map } from 'rxjs';
+import { DockItem } from '../../models/dock-item.model';
+import { AppID } from '../../shared/app-id.enum';
+import { OpenAppService } from '../open-app.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DockItemsService {
-  getDockItems(): DockItem[] {
+  private readonly openAppService = inject(OpenAppService);
+  private readonly dockItemsSubject = new BehaviorSubject<ReadonlyArray<DockItem>>(this.getInitialDockItems());
+  readonly dockItems$: Observable<ReadonlyArray<DockItem>> = this.dockItemsSubject.asObservable();
+
+  constructor() {
+    this.openAppService.openApps$.pipe(
+      map(openApps => {
+        const currentDockItems = this.dockItemsSubject.getValue();
+        return currentDockItems.map((item, index) => ({
+          ...item,
+          isActive: index === 0 || index === currentDockItems.length - 1 ||
+            openApps.some(app => app.id === item.appId && app.isOpen)
+        }));
+      })
+    ).subscribe(updatedItems => {
+      this.dockItemsSubject.next(updatedItems);
+    });
+  }
+
+  private getInitialDockItems(): DockItem[] {
     return [
-      { iconSrc: 'assets/icons/finder.png', label: 'Home', scale: 1, appId: AppID.Home },
-      { iconSrc: 'assets/icons/me.png', label: "That's Me", scale: 1, appId: AppID.AboutMe },
-      { iconSrc: 'assets/icons/calendar.png', label: 'Experience', scale: 1, appId: AppID.Experience },
-      { iconSrc: 'assets/icons/cmd.png', label: 'Projects', scale: 1, appId: AppID.Projects },
-      { iconSrc: 'assets/icons/settings.png', label: 'Skills', scale: 1, appId: AppID.Skills },
-      { iconSrc: 'assets/icons/books.png', label: 'Education', scale: 1, appId: AppID.Education },
-      { iconSrc: 'assets/icons/yt.png', label: 'My Youtube Channel', scale: 1, appId: AppID.Youtube },
-      { iconSrc: 'assets/icons/mail.png', label: 'Contacts', scale: 1, appId: AppID.Contacts },
-      { iconSrc: 'assets/icons/pages.png', label: 'Download CV', scale: 1, appId: AppID.CV },
+      { iconSrc: 'assets/icons/finder.png', label: 'Home', scale: 1, appId: AppID.Home, isActive: true },
+      { iconSrc: 'assets/icons/me.png', label: "That's Me", scale: 1, appId: AppID.AboutMe, isActive: false },
+      { iconSrc: 'assets/icons/calendar.png', label: 'Experience', scale: 1, appId: AppID.Experience, isActive: false },
+      { iconSrc: 'assets/icons/cmd.png', label: 'Projects', scale: 1, appId: AppID.Projects, isActive: false },
+      { iconSrc: 'assets/icons/settings.png', label: 'Skills', scale: 1, appId: AppID.Skills, isActive: false },
+      { iconSrc: 'assets/icons/books.png', label: 'Education', scale: 1, appId: AppID.Education, isActive: false },
+      { iconSrc: 'assets/icons/yt.png', label: 'My Youtube Channel', scale: 1, appId: AppID.Youtube, isActive: false },
+      { iconSrc: 'assets/icons/mail.png', label: 'Contacts', scale: 1, appId: AppID.Contacts, isActive: false },
+      { iconSrc: 'assets/icons/pages.png', label: 'Download CV', scale: 1, appId: AppID.CV, isActive: true },
     ];
   }
 }
