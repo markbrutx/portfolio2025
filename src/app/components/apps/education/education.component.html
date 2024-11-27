@@ -1,0 +1,92 @@
+<div class="education-container">
+  <!-- Modal -->
+  <!-- Temporarily hidden until photos are ready
+  @if (selectedImage(); as image) {
+    <div class="modal-overlay" (click)="setSelectedImage(null)">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="modal-close" (click)="setSelectedImage(null)">✕</button>
+        <img [src]="image.image" [alt]="image.imageAlt">
+      </div>
+    </div>
+  }
+  -->
+
+  <div class="header-section">
+    <div class="header-background">
+      <div class="overlay"></div>
+    </div>
+    <div class="floating-elements">
+      <div class="floating-circle">🎯</div>
+      <div class="floating-circle">💡</div>
+      <div class="floating-circle">🚀</div>
+    </div>
+    
+    <div class="header-content">
+      <h1>My Educational Journey</h1>
+      <div class="university-info">
+        <h2>S. Seifullin Kazakh AgroTechnical University (KATRU)</h2>
+        <p>Bachelor's Degree in Computer Science • 2017-2021</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="journey-summary">
+    <div class="summary-content">
+      <div class="summary-emoji">🪶</div>
+      <div class="summary-text">
+        <p>
+          My academic journey started with challenges, including not achieving the desired results in national testing.
+          However, I used it as motivation to learn and grow.
+          Starting as a self-funded student, I focused on consistent learning and improvement.
+          Over time, I improved my academic standing, eventually earning a merit-based scholarship.
+          Beyond academics, I engaged in community service and cultural activities,
+          making my university years a period of personal growth and development.
+        </p>
+      </div>
+    </div>
+    <div class="decorative-dots"></div>
+  </div>
+
+  <div class="achievements-section">
+    <div class="achievements-grid">
+      @for (achievement of mainAchievements; track achievement.metric; let i = $index) {
+        <div class="achievement-card" 
+             [class.expanded]="activeCard() === i"
+             [class.collapsed]="activeCard() !== null && activeCard() !== i"
+             (click)="setActiveCard(i)">
+          <div class="card-content">
+            <div class="card-header">
+              <span class="achievement-emoji">{{achievement.emoji}}</span>
+              <h3>{{achievement.metric}}</h3>
+              <p class="description">
+                {{achievement.description | lowercase}}
+              </p>
+            </div>
+            
+            @if (activeCard() === i) {
+              <div class="expandable-content">
+                <div class="details-list">
+                  @for (detail of achievement.details; track detail) {
+                    <div class="detail-item">
+                      <span class="detail-bullet">•</span>
+                      <span>{{detail | lowercase}}</span>
+                    </div>
+                  }
+                </div>
+                
+                <!-- Temporarily hidden until photos are ready
+                <div class="image-preview" (click)="$event.stopPropagation(); setSelectedImage(achievement)">
+                  <img [src]="achievement.image" [alt]="achievement.imageAlt">
+                  <div class="image-overlay">
+                    <span>View Larger</span>
+                  </div>
+                </div>
+                -->
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

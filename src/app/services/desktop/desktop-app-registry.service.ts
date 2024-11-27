@@ -3,7 +3,8 @@ import { DesktopAppConfig } from '../../models/desktop.models';
 import { AppID } from '../../shared/app-id.enum';
 import {AboutMeComponent} from '../../components/apps/about-me/about-me.component';
 import {SkillsComponent} from '../../components/apps/skills/skills.component';
-import ExperienceComponent from '../../components/apps/experience/experience.component'
+import ExperienceComponent from '../../components/apps/experience/experience.component';
+import { EducationComponent } from '../../components/apps/education/education.component';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +34,14 @@ export class DesktopAppRegistryService {
       width: 1200,
       height: 800,
       component: ExperienceComponent,
+    },
+    {
+      id: AppID.Education,
+      title: 'Education',
+      allowMaximize: true,
+      width: 1200,
+      height: 800,
+      component: EducationComponent,
     },
   ];
 
