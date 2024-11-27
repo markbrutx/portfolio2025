@@ -8,7 +8,7 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
 
 ### âœ… Completed
 
-- **Dock**: macOS-style interactive dock for navigation.
+- **Dock**: macOS-style interactive dock for navigation, fully implemented with Angular 19 syntax and active component tracking.
 - **CV Download**: Download my CV with one click.
 - **Cursor as on Mac**: macOS-like interactive cursor for improved UX.
 - **Top Bar**: A top navigation bar with the following features:
@@ -18,13 +18,12 @@ Welcome to **Portfolio2025**, a portfolio website built with **Angular 19**. ðŸš
   - Contact the author via email or Telegram.
   - Close all windows.
   - Display current time.
-- **About Me Section**: A bio modal with application opening capabilities and a planned personalized video introduction.
+- **About Me Section**: A bio modal built with Angular 19 syntax, featuring application opening capabilities and a planned personalized video introduction.
 - **Loading Screen**: A seamless, Apple-style loading screen to ensure all elements are preloaded for a smooth user experience.
 - **Skills Section**: A standalone component written entirely in Angular 19 syntax, featuring a comprehensive showcase of skills.
 - **Experience Section**: Interactive showcase of professional experience with modern Angular features and smooth scrolling functionality.
 
 ### ðŸš§ In Progress
-- **Dock Panel Integration**: Implementing active component tracking in the dock panel.
 - **Education Section**: Creating an interactive education timeline and achievements showcase.
 
 ### ðŸ“Œ Upcoming
