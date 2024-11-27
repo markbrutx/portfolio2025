@@ -1,64 +1,77 @@
-import { Component, AfterViewInit, ElementRef, HostListener, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NgIf } from '@angular/common';
+import {
+  Component,
+  AfterViewInit,
+  ElementRef,
+  HostListener,
+  ViewChild,
+  ChangeDetectionStrategy, signal, computed,
+} from '@angular/core'
+import { VideoState } from './about-me.types'
 
 @Component({
   selector: 'app-about-me',
   templateUrl: './about-me.component.html',
   styleUrls: ['./about-me.component.scss'],
   standalone: true,
-  imports: [NgIf],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AboutMeComponent implements AfterViewInit {
-  @ViewChild('video', { static: true }) videoElement!: ElementRef<HTMLVideoElement>;
+  @ViewChild('video', { static: true })
+  private readonly videoElement!: ElementRef<HTMLVideoElement>;
 
-  showWelcomeButton = false;
-  emojiAnimating = false;
-  private userInteracted = false;
+  private readonly state = signal<VideoState>({
+    showWelcomeButton: false,
+    emojiAnimating: false,
+    userInteracted: false
+  });
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  protected readonly showWelcomeButton = computed(() => this.state().showWelcomeButton);
+  protected readonly emojiAnimating = computed(() => this.state().emojiAnimating);
 
   ngAfterViewInit(): void {
-    this.tryAutoPlay();
-  }
-
-  private tryAutoPlay(): void {
-    const video = this.videoElement.nativeElement;
-
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .catch(() => {
-          console.error('Autoplay was blocked by the browser.');
-          this.showWelcomeButton = true;
-          this.cdr.markForCheck();
-        });
-    }
+    this.initializeVideo();
   }
 
   @HostListener('document:click')
-  handleUserInteraction(): void {
-    if (!this.userInteracted) {
-      this.userInteracted = true;
+  protected handleUserInteraction(): void {
+    if (!this.state().userInteracted) {
+      this.updateState({
+        userInteracted: true,
+        showWelcomeButton: false
+      });
       this.playVideo();
-      this.showWelcomeButton = false;
-      this.cdr.markForCheck();
     }
   }
 
-  handleWelcomeClick(): void {
-    this.emojiAnimating = true;
+  protected handleWelcomeClick(): void {
+    this.updateState({ emojiAnimating: true });
 
     setTimeout(() => {
-      this.showWelcomeButton = false;
+      this.updateState({ showWelcomeButton: false });
       this.playVideo();
-      this.cdr.markForCheck();
     }, 1500);
   }
 
+  private initializeVideo(): void {
+    const playPromise = this.videoElement.nativeElement.play();
+
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        console.error('Autoplay was blocked by the browser.');
+        this.updateState({ showWelcomeButton: true });
+      });
+    }
+  }
+
   private playVideo(): void {
-    this.videoElement.nativeElement.play().catch(() => {
-      console.error('Failed to play the video.');
-    });
+    this.videoElement.nativeElement.play()
+      .catch(() => console.error('Failed to play the video.'));
+  }
+
+  private updateState(partialState: Partial<VideoState>): void {
+    this.state.update(currentState => ({
+      ...currentState,
+      ...partialState
+    }));
   }
 }

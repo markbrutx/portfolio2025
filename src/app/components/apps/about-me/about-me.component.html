@@ -12,24 +12,30 @@
     <source src="./assets/videos/wave-optimized.webm" type="video/webm" />
   </video>
 
-  <div *ngIf="showWelcomeButton" class="overlay" [class.fade-out]="emojiAnimating">
-    <button class="welcome-button" (click)="handleWelcomeClick()">
-      <span class="text">Say Hi</span>
-      <span class="emoji">👋</span>
-    </button>
-  </div>
+  @if (showWelcomeButton()) {
+    <div class="overlay" [class.fade-out]="emojiAnimating()">
+      <button class="welcome-button" (click)="handleWelcomeClick()">
+        <span class="text">Say Hi</span>
+        <span class="emoji">👋</span>
+      </button>
+    </div>
+  }
 
-  <div *ngIf="emojiAnimating" class="floating-emoji">👋</div>
+  @if (emojiAnimating()) {
+    <div class="floating-emoji">👋</div>
+  }
 
-  <div *ngIf="!showWelcomeButton" class="ios-buttons">
-    <div class="icon-container">
-      <img src="./assets/icons/camera-off.svg" alt="Camera Off" />
+  @if (!showWelcomeButton()) {
+    <div class="ios-buttons">
+      <div class="icon-container">
+        <img src="./assets/icons/camera-off.svg" alt="Camera Off" />
+      </div>
+      <div class="icon-container">
+        <img src="./assets/icons/mic-mute.svg" alt="Mic Mute" />
+      </div>
+      <div class="icon-container">
+        <img src="./assets/icons/hand-end.svg" alt="Hand End" />
+      </div>
     </div>
-    <div class="icon-container">
-      <img src="./assets/icons/mic-mute.svg" alt="Mic Mute" />
-    </div>
-    <div class="icon-container">
-      <img src="./assets/icons/hand-end.svg" alt="Hand End" />
-    </div>
-  </div>
+  }
 </div>
