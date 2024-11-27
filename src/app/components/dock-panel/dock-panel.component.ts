@@ -1,145 +1,146 @@
+import { effect, inject, signal } from '@angular/core'
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
-  Inject,
-  OnDestroy,
   PLATFORM_ID,
-  ViewChild,
+  viewChild,
+  output,
+  OnDestroy,
   ViewChildren,
   QueryList,
-  Output,
-  EventEmitter, OnInit,
 } from '@angular/core'
-import { fromEvent, Subscription } from 'rxjs';
-import { isPlatformBrowser, NgForOf, NgIf } from '@angular/common';
-import { DockItemComponent } from '../dock-item/dock-item.component';
-import { FileDownloadService } from '../../services/file-download.service';
-import { AppID } from '../../shared/app-id.enum';
+import { fromEvent, Subject, takeUntil, throttleTime } from 'rxjs'
+import { isPlatformBrowser } from '@angular/common'
+import { DockItemComponent } from '../dock-item/dock-item.component'
+import { FileDownloadService } from '../../services/file-download.service'
+import { AppID } from '../../shared/app-id.enum'
 import { DockItemsService } from '../../services/dock/dock-items.service'
 import { DockItem } from '../../models/dock-item.model'
 import { calculateScaleFactor, isMouseInsideRect } from '../../utils/dock-panel.utils'
-import {AppStateService} from '../../state/app-state.service';
+import { AppStateService } from '../../state/app-state.service'
 
 @Component({
   selector: 'app-dock-panel',
   templateUrl: './dock-panel.component.html',
-  standalone: true,
-  imports: [DockItemComponent, NgForOf, NgIf],
   styleUrls: ['./dock-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [DockItemComponent],
 })
-export class DockPanelComponent implements AfterViewInit, OnDestroy, OnInit {
-  @ViewChild('dockPanel', { static: true }) dockPanel!: ElementRef;
-  @ViewChildren('dockItem', { read: ElementRef }) dockItemElements!: QueryList<ElementRef>;
-  @Output() appOpened = new EventEmitter<AppID>();
+export class DockPanelComponent implements AfterViewInit, OnDestroy {
+  protected readonly dockPanel = viewChild.required<ElementRef>('dockPanel')
 
-  dockItems: DockItem[] = [];
-  isDragging = false;
-  isMaximizedWindow = false;
+  @ViewChildren('dockItem', { read: ElementRef })
+  private readonly dockItemElements!: QueryList<ElementRef>
 
-  private subscriptions: Subscription[] = [];
+  protected readonly appOpened = output<AppID>()
 
-  constructor(
-    @Inject(PLATFORM_ID) private readonly platformId: object,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly fileDownloadService: FileDownloadService,
-    private readonly dockItemsService: DockItemsService,
-    private readonly appStateService: AppStateService
-  ) {}
+  private readonly destroy$ = new Subject<void>()
+  private readonly platformId = inject(PLATFORM_ID)
+  private readonly fileDownloadService = inject(FileDownloadService)
+  private readonly dockItemsService = inject(DockItemsService)
+  private readonly appStateService = inject(AppStateService)
 
-  ngOnInit(): void {
-    this.dockItems = this.dockItemsService.getDockItems();
+  protected readonly dockItems = signal<ReadonlyArray<DockItem>>(this.dockItemsService.getDockItems())
+  protected readonly isDragging = signal(false)
+  protected readonly isMaximizedWindow = signal(false)
 
-    this.subscriptions.push(
-      this.appStateService.state$.subscribe((state) => {
-        this.isDragging = state.isDragging;
-        this.isMaximizedWindow = !!state.maximizedWindowId;
-        if (this.isDragging) {
-          this.resetDockItemScales();
+  constructor() {
+    effect(() => {
+      this.appStateService.state$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
+        this.isDragging.set(state.isDragging)
+        this.isMaximizedWindow.set(!!state.maximizedWindowId)
+
+        if (state.isDragging) {
+          this.resetDockItemScales()
         }
-        this.cdr.markForCheck();
       })
-    );
+    })
   }
 
-  shouldShowDivider(index: number): boolean {
-    return index === 0 || index === this.dockItems.length - 2;
+  protected shouldShowDivider(index: number): boolean {
+    return index === 0 || index === this.dockItems().length - 2;
   }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.setupListeners();
+      this.setupListeners()
     }
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 
-  openApp(appId: AppID): void {
+  protected async openApp(appId: AppID): Promise<void> {
     if (appId === AppID.CV) {
-      this.handleCVDownload().then();
+      await this.handleCVDownload()
     } else {
-      this.appOpened.emit(appId);
+      this.appOpened.emit(appId)
     }
   }
 
   private async handleCVDownload(): Promise<void> {
     try {
-      await this.downloadCV();
+      await this.downloadCV()
     } catch (error) {
-      console.error('Error during CV download:', error);
+      console.error('Error during CV download:', error)
     }
   }
 
   private setupListeners(): void {
-    const dockPanelElement = this.dockPanel.nativeElement;
+    const dockPanelElement = this.dockPanel().nativeElement
 
-    this.subscriptions.push(
-      fromEvent(dockPanelElement, 'mouseleave').subscribe(() => {
-        this.resetDockItemScales();
-      }),
-      fromEvent<MouseEvent>(window, 'mousemove').subscribe((event) => {
-        if (!this.isDragging) {
-          this.calculateScales(event.clientX, event.clientY);
+    fromEvent(dockPanelElement, 'mouseleave')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.resetDockItemScales()
+      })
+
+    fromEvent<MouseEvent>(window, 'mousemove')
+      .pipe(takeUntil(this.destroy$),  throttleTime(16))
+      .subscribe((event) => {
+        if (!this.isDragging()) {
+          this.calculateScales(event.clientX, event.clientY)
         }
       })
-    );
   }
 
   private calculateScales(mouseX: number, mouseY: number): void {
-    const dockRect = this.dockPanel.nativeElement.getBoundingClientRect();
+    const dockRect = this.dockPanel().nativeElement.getBoundingClientRect()
 
-    if (!isMouseInsideRect(mouseX, mouseY, dockRect)) {
-      this.resetDockItemScales();
-      return;
+    if (!dockRect || !isMouseInsideRect(mouseX, mouseY, dockRect)) {
+      this.resetDockItemScales()
+      return
     }
 
-    this.dockItemElements.forEach((itemElementRef, index) => {
-      const itemElement = itemElementRef.nativeElement as HTMLElement;
-      const rect = itemElement.getBoundingClientRect();
-      const imgCenterX = rect.left + rect.width / 2;
+    const updatedDockItems = [...this.dockItems()].map((item, index) => {
+      const itemElement = this.dockItemElements.get(index)?.nativeElement as HTMLElement
+      if (!itemElement) return item
 
-      const scaleFactor = calculateScaleFactor(mouseX, imgCenterX);
-      this.dockItems[index].scale = parseFloat(scaleFactor.toFixed(2));
-    });
+      const rect = itemElement.getBoundingClientRect()
+      const imgCenterX = rect.left + rect.width / 2
+      const scaleFactor = calculateScaleFactor(mouseX, imgCenterX)
 
-    this.cdr.markForCheck();
+      return { ...item, scale: parseFloat(scaleFactor.toFixed(2)) }
+    })
+
+    this.dockItems.set(updatedDockItems)
   }
 
   private resetDockItemScales(): void {
-    this.dockItems.forEach((item) => (item.scale = 1));
-    this.cdr.markForCheck();
+    const resetItems = this.dockItems().map(item => ({ ...item, scale: 1 }))
+    this.dockItems.set(resetItems)
   }
 
-  async downloadCV(): Promise<void> {
+  private async downloadCV(): Promise<void> {
     try {
-      await this.fileDownloadService.downloadFile('/assets/cv.pdf', 'Magzhan_CV.pdf');
+      await this.fileDownloadService.downloadFile('/assets/cv.pdf', 'Magzhan_CV.pdf')
     } catch (error) {
-      console.error('Failed to download CV:', error);
+      console.error('Failed to download CV:', error)
     }
   }
 }

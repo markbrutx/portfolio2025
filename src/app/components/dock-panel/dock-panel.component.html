@@ -1,13 +1,21 @@
-<div class="dock-panel"  [class.lowered]="isMaximizedWindow" #dockPanel>
-  <ng-container *ngFor="let item of dockItems; let i = index">
+<div
+  class="dock-panel"
+  [class.lowered]="isMaximizedWindow()"
+  #dockPanel
+>
+  @for (item of dockItems(); track item.appId; let i = $index) {
     <app-dock-item
       #dockItem
       [iconSrc]="item.iconSrc"
       [label]="item.label"
+      [index]="i"
       [scale]="item.scale"
-      (click)="openApp(item.appId)"
+      [isActive]="item.isActive || false"
+      (clicked)="openApp(item.appId)"
     >
     </app-dock-item>
-    <div *ngIf="shouldShowDivider(i)" class="divider"></div>
-  </ng-container>
+    @if (shouldShowDivider(i)) {
+      <div class="divider"></div>
+    }
+  }
 </div>

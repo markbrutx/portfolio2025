@@ -1,12 +1,10 @@
+import { computed, effect, signal } from '@angular/core'
 import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
   ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
 } from '@angular/core'
-import { NgIf } from '@angular/common'
 
 @Component({
   selector: 'app-dock-item',
@@ -14,37 +12,38 @@ import { NgIf } from '@angular/common'
   styleUrls: ['./dock-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf],
 })
-export class DockItemComponent implements OnChanges {
-  @Input() iconSrc = ''
-  @Input() label = ''
-  @Input() index = 0
-  @Input() isActive = false
-  @Input() scale = 1
-  @Output() clicked = new EventEmitter<void>()
+export class DockItemComponent {
+  readonly iconSrc = input.required<string>();
+  readonly label = input.required<string>();
+  readonly index = input.required<number>();
+  readonly isActive = input<boolean>();
+  readonly scale = input.required<number>();
+  readonly clicked = output<void>()
 
-  sizeRem = 4
-  tooltipVisible = false
-  transitionDuration = '0.2s'
-  private previousScale = 1
+  protected readonly sizeRem = computed(() => 4 * this.scale())
+  protected readonly tooltipVisible = signal(false)
+  protected readonly transitionDuration = signal('0.2s')
 
-  ngOnChanges(): void {
-    this.sizeRem = 4 * this.scale
-    const scaleIncreasing = this.scale > this.previousScale
-    this.previousScale = this.scale
-    this.transitionDuration = scaleIncreasing ? '0.1s' : '0.3s'
+  private _previousScale = 1
+
+  constructor() {
+    effect(() => {
+      const currentScale = this.scale()
+      this.transitionDuration.set(currentScale > this._previousScale ? '0.1s' : '0.3s')
+      this._previousScale = currentScale
+    })
   }
 
-  showTooltip(): void {
-    this.tooltipVisible = true
+  protected showTooltip(): void {
+    this.tooltipVisible.set(true)
   }
 
-  hideTooltip(): void {
-    this.tooltipVisible = false
+  protected hideTooltip(): void {
+    this.tooltipVisible.set(false)
   }
 
-  onClick(): void {
+  protected onClick(): void {
     this.clicked.emit()
   }
 }

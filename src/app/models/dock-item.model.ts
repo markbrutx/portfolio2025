@@ -5,4 +5,5 @@ export interface DockItem {
   label: string;
   scale: number;
   appId: AppID;
+  isActive?: boolean;
 }
