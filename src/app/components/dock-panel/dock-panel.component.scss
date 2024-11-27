@@ -9,23 +9,27 @@
   bottom: 1.25rem;
   left: 50%;
   transform: translateX(-50%);
-  padding: #{vars.$dock-panel-padding};
-  background: #{vars.$dock-panel-background};
-  backdrop-filter: blur(#{vars.$dock-panel-blur});
-  border-radius: #{vars.$dock-panel-border-radius};
   user-select: none;
   overflow: visible;
   z-index: 100;
   transition: z-index 0.3s ease;
+  padding: #{vars.$dock-panel-padding};
+  background: #{vars.$dock-panel-background};
+  backdrop-filter: blur(#{vars.$dock-panel-blur});
+  border-radius: #{vars.$dock-panel-border-radius};
 
   &.lowered {
     z-index: 10;
   }
-}
 
-.divider {
-  width: #{vars.$dock-divider-width};
-  height: 100%;
-  background-color: #{vars.$dock-divider-color};
-  margin: #{vars.$dock-divider-margin};
+  &.hidden {
+    pointer-events: none;
+  }
+
+  .divider {
+    width: #{vars.$dock-divider-width};
+    height: #{vars.$dock-item-size};
+    background-color: #{vars.$dock-divider-color};
+    margin: #{vars.$dock-divider-margin};
+  }
 }

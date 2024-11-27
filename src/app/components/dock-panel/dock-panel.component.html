@@ -1,21 +1,20 @@
-<div
+<section
   class="dock-panel"
   [class.lowered]="isMaximizedWindow()"
+  [class.hidden]="isDragging()"
   #dockPanel
 >
-  @for (item of dockItems(); track item.appId; let i = $index) {
+  @for (item of dockItems(); track item.appId) {
     <app-dock-item
-      #dockItem
       [iconSrc]="item.iconSrc"
       [label]="item.label"
-      [index]="i"
-      [scale]="item.scale"
+      [index]="item.appId"
       [isActive]="item.isActive"
+      [scale]="item.scale"
       (clicked)="openApp(item.appId)"
-    >
-    </app-dock-item>
-    @if (shouldShowDivider(i)) {
-      <div class="divider"></div>
+    />
+    @if (shouldShowDivider($index)) {
+      <div class="divider" aria-hidden="true"></div>
     }
   }
-</div>
+</section>
