@@ -1,0 +1,20 @@
+@if (isVisible()) {
+  <div 
+    class="container"
+    [class.dark]="true"
+    [style.left.px]="position().x"
+    [style.top.px]="position().y"
+  >
+    <div class="menu-items">
+      @for (item of menuItems; track $index) {
+        @if (!item.divider) {
+          <button class="menu-item" (click)="handleItemClick(item)">
+            {{ item.label }}
+          </button>
+        } @else {
+          <hr class="divider">
+        }
+      }
+    </div>
+  </div>
+}

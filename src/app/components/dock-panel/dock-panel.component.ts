@@ -128,9 +128,9 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   }
   private async downloadCV(): Promise<void> {
     try {
-      await this.fileDownloadService.downloadFile('/assets/cv.pdf', 'Magzhan_CV.pdf');
+      await this.fileDownloadService.downloadCV();
     } catch (error) {
-      console.error('Failed to download CV:', error);
+      console.error('Error in dock panel CV download:', error);
     }
   }
 }

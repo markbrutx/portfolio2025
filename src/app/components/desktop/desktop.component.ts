@@ -7,6 +7,8 @@ import {
   OnDestroy,
   PLATFORM_ID,
   NgZone,
+  ViewChild,
+  HostListener
 } from '@angular/core';
 import { Position, OpenApp } from '../../models/desktop.models';
 import { AppID } from '../../shared/app-id.enum';
@@ -17,18 +19,22 @@ import { OpenAppService } from '../../services/open-app.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {DesktopAppRegistryService} from '../../services/desktop/desktop-app-registry.service';
+import { CommonModule } from '@angular/common';
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
 
 @Component({
   selector: 'app-desktop',
+  standalone: true,
+  imports: [WindowComponent, NgForOf, NgIf, CommonModule, ContextMenuComponent],
   templateUrl: './desktop.component.html',
   styleUrls: ['./desktop.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [WindowComponent, NgForOf, NgIf],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DesktopComponent implements AfterViewInit, OnDestroy {
   openApps: OpenApp[] = [];
   private destroy$ = new Subject<void>();
+
+  @ViewChild(ContextMenuComponent) contextMenu!: ContextMenuComponent;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
@@ -113,5 +119,11 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
         app.config?.height ?? 400
       )
     );
+  }
+
+  @HostListener('contextmenu', ['$event'])
+  onContextMenu(event: MouseEvent) {
+    event.preventDefault();
+    this.contextMenu.show(event.pageX, event.pageY);
   }
 }
