@@ -12,6 +12,7 @@ Portfolio website built with Angular 19, featuring MacOS-style interface and int
 - CV download functionality
 - Youtube channel link
 - Loading screen with preload functionality
+- Mobile placeholder UI
 
 ## Setup
 
