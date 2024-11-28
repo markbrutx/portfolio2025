@@ -1,0 +1,120 @@
+@use 'variables' as *;
+
+// Card base styles
+@mixin card-base {
+  background: $background-white;
+  border-radius: $radius-md;
+  box-shadow: $shadow-sm;
+  transition: all $transition-normal;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+// Header section styles
+@mixin header-section {
+  position: relative;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  
+  .header-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: $gradient-header-overlay;
+    }
+  }
+
+  .header-content {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: $spacing-lg;
+    z-index: 2;
+    color: white;
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: $spacing-xs;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+  }
+
+  .floating-elements {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    .floating-circle {
+      position: absolute;
+      font-size: 2rem;
+      filter: drop-shadow(0 2px 4px rgba(255,255,255,0.3));
+      animation: float 4s ease-in-out infinite;
+      opacity: 0.9;
+      
+      &:nth-child(1) { right: 8%; top: 15%; animation-delay: 0s; }
+      &:nth-child(2) { right: 18%; top: 45%; animation-delay: 1.5s; }
+      &:nth-child(3) { right: 12%; top: 75%; animation-delay: 0.8s; }
+    }
+  }
+}
+
+// Grid container styles
+@mixin grid-container {
+  max-width: 1200px;
+  margin: -50px auto 0;
+  padding: 0 $spacing-md $spacing-lg;
+  position: relative;
+  z-index: 1;
+}
+
+// Scrollbar styles
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: calc($radius-md / 3);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+}

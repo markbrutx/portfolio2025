@@ -104,3 +104,40 @@ $color-hover-text: hsl(0, 0%, 100%);
 $top-bar-bg: rgba(255, 255, 255, 0.3);
 $top-bar-text: hsl(0, 0%, 11%);
 $top-bar-shadow: hsla(0, 0%, 0%, 0.1);
+
+
+// Colors
+$background-primary: #f8f9fa;
+$background-white: #ffffff;
+$text-primary: #2c3e50;
+$text-secondary: #666666;
+$accent-primary: #6366f1;
+$accent-secondary: #007bff;
+
+// Gradients
+$gradient-primary: linear-gradient(to bottom, $background-primary, $background-white);
+$gradient-accent: linear-gradient(90deg, $accent-primary, #8b5cf6);
+$gradient-header-overlay: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+
+// Spacing
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 1.5rem;
+$spacing-lg: 2rem;
+$spacing-xl: 3rem;
+
+// Border radius
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+
+// Shadows
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.5s ease;
+$transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
