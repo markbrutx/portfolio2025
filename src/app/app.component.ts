@@ -1,28 +1,31 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { NgIf, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { DockPanelComponent } from './components/dock-panel/dock-panel.component';
 import { DesktopComponent } from './components/desktop/desktop.component';
 import { TopBarComponent } from './components/topbar/top-bar/top-bar.component';
 import { BootScreenComponent } from './components/boot-screen/boot-screen.component';
+import { DeviceService } from './services/device.service';
+import { MobilePlaceholderComponent } from './components/mobile-placeholder/mobile-placeholder.component';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [
+    CommonModule,
     DockPanelComponent,
     DesktopComponent,
     TopBarComponent,
     BootScreenComponent,
-    NgIf,
-    CommonModule,
+    MobilePlaceholderComponent,
   ],
   templateUrl: './app.component.html',
-  standalone: true,
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-  title = 'M.N Portfolio 2025';
   userReady = false;
 
   @ViewChild('desktop') desktop!: DesktopComponent;
+
+  constructor(public deviceService: DeviceService) {}
 }

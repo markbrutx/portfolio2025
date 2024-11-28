@@ -11,10 +11,12 @@ body {
 
   font-family: #{vars.$font-family};
 
-  overflow: hidden;
-
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  @media (min-width: 1024px) {
+    overflow: hidden;
+  }
 }
 
 * {

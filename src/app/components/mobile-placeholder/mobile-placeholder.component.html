@@ -1,0 +1,62 @@
+<div class="mobile-placeholder">
+  <div class="bubble-container">
+    @for (i of [1,2,3]; track i) {
+      <div class="bubble" [style.animation-delay]="i * 0.2 + 's'"></div>
+    }
+  </div>
+  
+  <div class="content">
+    <div class="logo">
+      <img src="assets/icons/me.png" alt="Portfolio logo" />
+    </div>
+
+    <div class="message">
+      <h1>Oh, hey! <span class="wave">👋</span></h1>
+      <p>Looks like you're visiting my portfolio from a mobile device. 
+         I've crafted this experience specifically for desktop viewing in Mac OS style, 
+         and I promise it will surprise you! Can't access desktop right now? 
+         Check out the quick YouTube demo below! ✨</p>
+    </div>
+
+    <div class="video-preview">
+      <a href="https://youtu.be/h3XZw9S4mMY" target="_blank" class="video-link">
+        <img src="assets/cover.png" alt="Portfolio Preview" />
+        <div class="play-button">
+          <div class="pulse"></div>
+          <img src="assets/icons/youtube-logo.svg" alt="Play Video" />
+        </div>
+      </a>
+      <div class="video-label">Watch Demo (~3 min)</div>
+    </div>
+
+    <div class="contacts">
+      <button class="contacts-toggle" (click)="toggleContacts()">
+        Or let's Connect!
+        <img 
+          src="assets/icons/caret-down.svg" 
+          [class.rotated]="showContacts()"
+          alt="Toggle Contacts"
+        />
+      </button>
+      
+      <div class="contacts-list">
+        @if (showContacts()) {
+          @for (contact of contacts; track contact.label) {
+            <a [href]="contact.link" 
+               class="contact-item"
+               target="_blank">
+              <div class="contact-info">
+                <img [src]="contact.icon" [alt]="contact.label" />
+                <div>
+                  <div class="label">{{contact.label}}</div>
+                  <div class="value">{{contact.value}}</div>
+                </div>
+              </div>
+              <img src="assets/icons/arrow-square-out.svg" alt="Open" class="external-link" />
+            </a>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>
