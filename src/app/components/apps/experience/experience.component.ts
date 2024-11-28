@@ -3,14 +3,12 @@ import { NgStyle } from '@angular/common';
 import { computed, signal } from '@angular/core';
 import { YEARS } from './constants/experience.constants';
 import { ExperienceService } from './services/experience.service';
-import TimelineComponent from './components/timeline/timeline.component';
 import ExperienceCardComponent from './components/experience-card/experience-card.component';
 
 @Component({
   selector: 'app-experience',
   standalone: true,
   imports: [
-    TimelineComponent,
     ExperienceCardComponent,
     NgStyle
   ],

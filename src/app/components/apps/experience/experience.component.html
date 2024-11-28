@@ -1,5 +1,18 @@
-<section class="section timeline-container" [ngStyle]="containerStyle()">
-  <h1 class="timeline-title">Experience Timeline</h1>
+<section class="timeline-container" [ngStyle]="containerStyle()">
+  <div class="header-section">
+    <div class="header-background">
+      <div class="overlay"></div>
+    </div>
+    <div class="floating-elements">
+      <span class="floating-emoji">👨‍💻</span>
+      <span class="floating-emoji">🚀</span>
+      <span class="floating-emoji">💡</span>
+    </div>
+    <div class="header-content">
+      <h1>Experience Timeline</h1>
+      <p>Journey through my professional path and key achievements</p>
+    </div>
+  </div>
 
   <div class="timeline-items">
     @for (experience of experiences().experiences; track experience.id) {
@@ -9,8 +22,4 @@
       />
     }
   </div>
-
-  <app-timeline
-    [years]="years"
-  />
 </section>
