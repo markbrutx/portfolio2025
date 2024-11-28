@@ -69,7 +69,7 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   }
 
   protected shouldShowDivider(index: number): boolean {
-    return index === 0 || index === this.dockItems().length - 2;
+    return index === 0 || index === this.dockItems().length - 3;
   }
 
   ngAfterViewInit(): void {
@@ -86,6 +86,8 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   protected async openApp(appId: AppID): Promise<void> {
     if (appId === AppID.CV) {
       await this.handleCVDownload();
+    } else if (appId === AppID.Youtube) {
+      window.open('https://www.youtube.com/@TheMarkBrut', '_blank');
     } else {
       this.openAppService.openApp(appId);
       this.appOpened.emit(appId);
