@@ -8,14 +8,10 @@ Portfolio website built with Angular 19, featuring MacOS-style interface and int
   - Dock-style navigation
   - Interactive cursor
   - System-like windows and controls
-- About Me,Skills, Experience, Education sections
+- About Me, Skills, Experience, Education, Contacts, and Projects sections
 - CV download functionality
+- Youtube channel link
 - Loading screen with preload functionality
-
-## In Development
-- Contacts section
-- Light Novel Reader demo (Projects section)
-- Resume Enhancer project (Projects section)
 
 ## Setup
 
