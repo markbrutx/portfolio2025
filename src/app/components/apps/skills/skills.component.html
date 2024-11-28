@@ -1,6 +1,21 @@
 <div
   #skillsContainer
   class="skills-container">
+  <div class="header-section">
+    <div class="header-background">
+      <div class="overlay"></div>
+    </div>
+    <div class="floating-elements">
+      <span class="floating-circle">🚀</span>
+      <span class="floating-circle">💡</span>
+      <span class="floating-circle">⚡</span>
+    </div>
+    <div class="header-content">
+      <h1>My Skills</h1>
+      <p>A showcase of my technical expertise and professional capabilities</p>
+    </div>
+  </div>
+
   <div class="skills-content">
     @for (category of categories(); track category.key) {
       <div class="skill-category">
