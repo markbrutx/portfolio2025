@@ -5,6 +5,7 @@ import {AboutMeComponent} from '../../components/apps/about-me/about-me.componen
 import {SkillsComponent} from '../../components/apps/skills/skills.component';
 import ExperienceComponent from '../../components/apps/experience/experience.component';
 import { EducationComponent } from '../../components/apps/education/education.component';
+import { ContactsComponent } from '../../components/apps/contacts/contacts.component';
 
 @Injectable({
   providedIn: 'root',
@@ -43,7 +44,19 @@ export class DesktopAppRegistryService {
       height: 800,
       component: EducationComponent,
     },
+    {
+      id: AppID.Contacts,
+      title: 'Contacts',
+      allowMaximize: true,
+      width: 1200,
+      height: 800,
+      component: ContactsComponent,
+    },
   ];
+
+  registerApp(appConfig: DesktopAppConfig) {
+    this.apps.push(appConfig);
+  }
 
   getAppConfig(appId: AppID): DesktopAppConfig | undefined {
     return this.apps.find((app) => app.id === appId);

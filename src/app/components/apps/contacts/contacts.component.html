@@ -1,0 +1,46 @@
+<div class="contacts-container">
+  <div class="header-section">
+    <div class="header-background">
+      <div class="overlay"></div>
+    </div>
+    <div class="floating-elements">
+      <div class="floating-circle">📱</div>
+      <div class="floating-circle">📧</div>
+      <div class="floating-circle">💬</div>
+    </div>
+    
+    <div class="header-content">
+      <h1>Get in Touch</h1>
+      <p>Feel free to reach out through any of these channels</p>
+    </div>
+  </div>
+
+  <div class="contacts-grid">
+    @for (contact of contacts; track contact.id) {
+      <div class="contact-card" [class.copied]="copiedField() === contact.id">
+        <div class="contact-content">
+          <div class="contact-info">
+            <div class="icon-container">
+              <img [src]="contact.icon" [alt]="contact.label" class="label-icon">
+            </div>
+            <div class="text-content">
+              <p class="label">{{ contact.label }}</p>
+              <p class="value">{{ contact.value }}</p>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="action-button" (click)="handleCopy(contact.value, contact.id)" title="Copy to clipboard">
+              <img src="assets/icons/copy.svg" alt="Copy" class="action-icon">
+            </button>
+            <a [href]="contact.link" target="_blank" rel="noopener noreferrer" class="action-button" [title]="'Open ' + contact.label">
+              <img [src]="contact.icon" [alt]="'Open ' + contact.label" class="action-icon">
+            </a>
+          </div>
+        </div>
+        @if (copiedField() === contact.id) {
+          <div class="copied-tooltip">Copied!</div>
+        }
+      </div>
+    }
+  </div>
+</div>
