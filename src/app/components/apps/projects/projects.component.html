@@ -1,0 +1,87 @@
+<div class="projects-container">
+  <div class="header-section">
+    <div class="header-background">
+      <div class="overlay"></div>
+    </div>
+    <div class="floating-elements">
+      <div class="floating-circle">🚀</div>
+      <div class="floating-circle">💡</div>
+      <div class="floating-circle">⚡</div>
+    </div>
+    
+    <div class="header-content">
+      <h1>Featured Projects</h1>
+      <p>Turning ideas into reality, one project at a time</p>
+    </div>
+  </div>
+  
+  <div class="projects-grid single-column">
+    @for (project of projects; track project.id) {
+      <div class="project-card" 
+           [class.active]="isProjectActive(project.id)"
+           (click)="setActiveProject(project.id)">
+        
+        <div class="card-header">
+          <div class="icon-wrapper">
+            <img [src]="'assets/icons/' + project.icon + '.svg'" [alt]="project.icon" class="icon">
+          </div>
+          <div class="title-section">
+            <h3>{{project.title}}</h3>
+            <p>{{project.shortDesc}}</p>
+          </div>
+        </div>
+
+        <div class="tech-badges">
+          @for (tech of project.tech; track tech) {
+            <span class="tech-badge">{{tech}}</span>
+          }
+        </div>
+
+        <div class="stats-section">
+          @for (stat of project.stats; track stat.text) {
+            <div class="stat-item">
+              <img [src]="'assets/icons/' + stat.icon + '.svg'" [alt]="stat.icon" class="stat-icon">
+              <span class="stat-text">{{stat.text}}</span>
+            </div>
+          }
+        </div>
+
+        <div class="project-content" [class.expanded]="isProjectActive(project.id)">
+          <p>{{project.content}}</p>
+          
+          @if (project.videoUrl) {
+            <div class="video-preview">
+              <a [href]="project.videoUrl" target="_blank" (click)="$event.stopPropagation()">
+                <div class="video-icon">
+                  <img src="assets/icons/play.svg" alt="play" class="play-icon">
+                </div>
+                <div class="video-info">
+                  <h4>{{project.videoTitle}}</h4>
+                  <p>Watch on YouTube</p>
+                </div>
+              </a>
+            </div>
+          }
+        </div>
+
+        <div class="card-footer">
+          <span>{{isProjectActive(project.id) ? 'Show less' : 'Read story'}}</span>
+          <img 
+            src="assets/icons/caret-right.svg" 
+            alt="caret" 
+            class="arrow" 
+            [class.rotated]="isProjectActive(project.id)">
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="note-section">
+    <div class="note-content">
+      <div class="note-icon">
+        <img src="assets/icons/info.svg" alt="info" class="info-icon">
+      </div>
+      <p>{{projectsNote}}</p>
+    </div>
+  </div>
+</div>

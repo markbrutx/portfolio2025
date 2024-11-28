@@ -6,6 +6,7 @@ import {SkillsComponent} from '../../components/apps/skills/skills.component';
 import ExperienceComponent from '../../components/apps/experience/experience.component';
 import { EducationComponent } from '../../components/apps/education/education.component';
 import { ContactsComponent } from '../../components/apps/contacts/contacts.component';
+import { ProjectsComponent } from '../../components/apps/projects/projects.component';
 
 @Injectable({
   providedIn: 'root',
@@ -43,6 +44,14 @@ export class DesktopAppRegistryService {
       width: 1200,
       height: 800,
       component: EducationComponent,
+    },
+    {
+      id: AppID.Projects,
+      title: 'Projects',
+      allowMaximize: true,
+      width: 1200,
+      height: 800,
+      component: ProjectsComponent,
     },
     {
       id: AppID.Contacts,
