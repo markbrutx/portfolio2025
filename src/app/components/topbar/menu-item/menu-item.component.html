@@ -8,12 +8,16 @@
   <button>
     <ng-content></ng-content>
   </button>
-  <div class="dropdown" *ngIf="menuStateService.isMenuActive(el.nativeElement)">
-    <ng-container *ngFor="let item of menuItems; let i = index">
-      <button class="menu-item-button" (click)="item.action()">
-        {{ item.label }}
-      </button>
-      <div class="divider" *ngIf="i < menuItems.length - 1"></div>
-    </ng-container>
-  </div>
+  @if (menuStateService.isMenuActive(el.nativeElement)) {
+    <div class="dropdown">
+      @for (item of menuItems; track item; let i = $index) {
+        <button class="menu-item-button" (click)="item.action()">
+          {{ item.label }}
+        </button>
+        @if (i < menuItems.length - 1) {
+          <div class="divider"></div>
+        }
+      }
+    </div>
+  }
 </div>

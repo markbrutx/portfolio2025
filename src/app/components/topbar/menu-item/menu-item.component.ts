@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { MenuStateService } from '../../../state/menu-state.service';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ClickOutsideDirective } from '../../../directives/click-outside.directive';
 
 @Component({
@@ -16,7 +16,7 @@ import { ClickOutsideDirective } from '../../../directives/click-outside.directi
   standalone: true,
   templateUrl: './menu-item.component.html',
   styleUrls: ['./menu-item.component.scss'],
-  imports: [NgForOf, NgIf, ClickOutsideDirective, NgClass],
+  imports: [ClickOutsideDirective, NgClass],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuItemComponent implements OnInit, OnDestroy {

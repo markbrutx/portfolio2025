@@ -18,14 +18,14 @@ import { isPlatformBrowser, NgForOf, NgIf } from '@angular/common';
 import { OpenAppService } from '../../services/open-app.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import {DesktopAppRegistryService} from '../../services/desktop/desktop-app-registry.service';
+import { DesktopAppRegistryService } from '../../services/desktop/desktop-app-registry.service';
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 
 @Component({
   selector: 'app-desktop',
   standalone: true,
-  imports: [WindowComponent, NgForOf, NgIf, CommonModule, ContextMenuComponent],
+  imports: [WindowComponent, CommonModule, ContextMenuComponent],
   templateUrl: './desktop.component.html',
   styleUrls: ['./desktop.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
