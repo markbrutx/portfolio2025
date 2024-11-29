@@ -26,6 +26,14 @@
     width: 100%;
     height: calc(100vh - 2rem);
     z-index: 100;
+
+    .window-header {
+      border-radius: 0;
+    }
+
+    .window-content {
+      border-radius: 0;
+    }
   }
 }
 

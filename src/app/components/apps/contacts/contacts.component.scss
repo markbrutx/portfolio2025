@@ -106,7 +106,7 @@
   .contacts-grid {
     @include grid-container;
     max-width: 600px;
-    margin: 2rem auto 0;
+    margin: -2rem auto 0;
     padding: 0 1.5rem 2rem;
     display: flex;
     flex-direction: column;
