@@ -23,22 +23,21 @@ export class PositionService {
     height: number
   ): Position {
     if (openApps.length === 0) {
-      return this.getCenterPosition(width, height)
+      return this.getCenterPosition(width, height);
     }
 
-    const lastPosition = openApps[openApps.length - 1].initialPosition ?? {
-      x: 0,
-      y: 0,
-    }
-    let nextX = lastPosition.x + this.positionOffset
-    let nextY = lastPosition.y + this.positionOffset
+    const currentOffset = this.positionOffset * openApps.length;
+    let nextX = currentOffset;
+    let nextY = currentOffset;
 
     if (nextX + width > window.innerWidth) {
-      nextX = this.positionOffset
+      nextX = this.positionOffset;
+      nextY = currentOffset;
     }
 
     if (nextY + height > window.innerHeight) {
-      nextY = this.positionOffset
+      nextX = this.positionOffset;
+      nextY = this.positionOffset;
     }
 
     return { x: nextX, y: nextY }

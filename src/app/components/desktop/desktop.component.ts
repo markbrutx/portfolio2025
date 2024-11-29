@@ -1,16 +1,17 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   Inject,
   OnDestroy,
   PLATFORM_ID,
   NgZone,
   ViewChild,
-  HostListener
+  HostListener,
+  signal,
+  computed
 } from '@angular/core';
-import { Position, OpenApp } from '../../models/desktop.models';
+import { Position, OpenApp, DesktopAppConfig } from '../../models/desktop.models';
 import { AppID } from '../../shared/app-id.enum';
 import { PositionService } from '../../services/position.service';
 import { WindowComponent } from '../window/window.component';
@@ -22,6 +23,16 @@ import { DesktopAppRegistryService } from '../../services/desktop/desktop-app-re
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 
+const DEFAULT_WINDOW = {
+  width: 500,
+  height: 400
+} as const;
+
+const INITIAL_WINDOW = {
+  width: 600,
+  height: 400
+} as const;
+
 @Component({
   selector: 'app-desktop',
   standalone: true,
@@ -31,40 +42,24 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DesktopComponent implements AfterViewInit, OnDestroy {
-  openApps: OpenApp[] = [];
-  private destroy$ = new Subject<void>();
-
-  @ViewChild(ContextMenuComponent) contextMenu!: ContextMenuComponent;
+  protected readonly openApps = signal<ReadonlyArray<OpenApp>>([]);
+  
+  private readonly destroy$ = new Subject<void>();
+  @ViewChild(ContextMenuComponent) private readonly contextMenu!: ContextMenuComponent;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private positionService: PositionService,
-    private openAppService: OpenAppService,
-    private appRegistry: DesktopAppRegistryService,
-    private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    @Inject(PLATFORM_ID) private readonly platformId: string,
+    private readonly positionService: PositionService,
+    private readonly openAppService: OpenAppService,
+    private readonly appRegistry: DesktopAppRegistryService,
+    private readonly ngZone: NgZone
   ) {
-    this.openAppService.openApps$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((apps) => {
-        this.openApps = apps.map((app) => ({
-          ...app,
-          config: this.appRegistry.getAppConfig(app.id) ?? undefined,
-        }));
-        this.cdr.markForCheck();
-      });
+    this.initializeAppSubscription();
   }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.ngZone.runOutsideAngular(() => {
-        requestAnimationFrame(() => {
-          const centerPosition = this.positionService.getCenterPosition(600, 400);
-          this.ngZone.run(() => {
-            this.openApp(AppID.AboutMe, centerPosition);
-          });
-        });
-      });
+      this.initializeFirstApp();
     }
   }
 
@@ -80,50 +75,114 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const position = initialPosition ??
-      this.positionService.getNextPosition(this.openApps, appConfig.width, appConfig.height);
-
-    const updatedApps = [...this.openApps];
-    const existingAppIndex = updatedApps.findIndex(app => app.id === appId);
-
-    if (existingAppIndex !== -1) {
-      updatedApps[existingAppIndex].isOpen = true;
-    } else {
-      updatedApps.push({
-        id: appId,
-        isOpen: true,
-        initialPosition: position,
-        config: appConfig,
-      });
-    }
-
-    this.openAppService.setOpenApps(updatedApps);
-    this.openApps = updatedApps;
-    this.cdr.markForCheck();
+    const position = this.calculateAppPosition(appConfig, initialPosition);
+    const updatedApps = this.updateAppsWithNewApp(appId, position, appConfig);
+    
+    this.updateAppState(updatedApps);
   }
+
   closeApp(appId: AppID): void {
-    const appIndex = this.openApps.findIndex((app) => app.id === appId);
-    if (appIndex !== -1) {
-      this.openApps.splice(appIndex, 1);
-      this.openAppService.setOpenApps(
-        this.openApps.map(({ id, isOpen }) => ({ id, isOpen }))
-      );
-    }
+    const currentApps = [...this.openApps()];
+    const appIndex = currentApps.findIndex((app) => app.id === appId);
+    
+    if (appIndex === -1) return;
+
+    currentApps.splice(appIndex, 1);
+    this.updateAppState(currentApps);
   }
 
   getSafeInitialPosition(app: OpenApp): Position {
-    return (
-      app.initialPosition ??
-      this.positionService.getCenterPosition(
-        app.config?.width ?? 500,
-        app.config?.height ?? 400
-      )
-    );
+    if (!app.initialPosition) {
+      const currentApps = this.openApps();
+      const openAppsWithPositions = currentApps
+        .filter(a => a.isOpen && a.id !== app.id);
+      
+      console.log('Getting position for app:', app.id, 'current open apps:', openAppsWithPositions);
+      
+      return this.positionService.getNextPosition(
+        openAppsWithPositions,
+        app.config?.width ?? DEFAULT_WINDOW.width,
+        app.config?.height ?? DEFAULT_WINDOW.height
+      );
+    }
+    return app.initialPosition;
   }
 
   @HostListener('contextmenu', ['$event'])
-  onContextMenu(event: MouseEvent) {
+  protected onContextMenu(event: MouseEvent): void {
     event.preventDefault();
     this.contextMenu.show(event.pageX, event.pageY);
+  }
+
+  private initializeAppSubscription(): void {
+    this.openAppService.openApps$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((apps) => {
+        const updatedApps = apps.map((app) => ({
+          ...app,
+          config: this.appRegistry.getAppConfig(app.id) ?? undefined,
+        }));
+        this.openApps.set(updatedApps);
+      });
+  }
+
+  private initializeFirstApp(): void {
+    this.ngZone.runOutsideAngular(() => {
+      requestAnimationFrame(() => {
+        const centerPosition = this.positionService.getCenterPosition(
+          INITIAL_WINDOW.width,
+          INITIAL_WINDOW.height
+        );
+        this.ngZone.run(() => {
+          this.openApp(AppID.AboutMe, centerPosition);
+        });
+      });
+    });
+  }
+
+  private calculateAppPosition(
+    appConfig: DesktopAppConfig,
+    initialPosition?: Position
+  ): Position {
+    const position = initialPosition ?? this.positionService.getNextPosition(
+      [...this.openApps()],
+      appConfig.width,
+      appConfig.height
+    );
+    return position;
+  }
+
+  private updateAppsWithNewApp(
+    appId: AppID, 
+    position: Position,
+    appConfig: DesktopAppConfig
+  ): OpenApp[] {
+    const currentApps = [...this.openApps()];
+    const existingAppIndex = currentApps.findIndex(app => app.id === appId);
+
+    if (existingAppIndex !== -1) {
+      currentApps[existingAppIndex] = {
+        ...currentApps[existingAppIndex],
+        isOpen: true,
+        initialPosition: position,
+        config: appConfig
+      };
+      return currentApps;
+    }
+
+    const newApps = [...currentApps, {
+      id: appId,
+      isOpen: true,
+      initialPosition: position,
+      config: appConfig,
+    }];
+    return newApps;
+  }
+
+  private updateAppState(apps: OpenApp[]): void {
+    this.openApps.set(apps);
+    this.openAppService.setOpenApps(
+      apps.map(({ id, isOpen }) => ({ id, isOpen }))
+    );
   }
 }

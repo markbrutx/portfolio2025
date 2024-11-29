@@ -4,11 +4,15 @@
     [class.dark]="true"
     [style.left.px]="position().x"
     [style.top.px]="position().y"
+    (click)="$event.stopPropagation()"
   >
     <div class="menu-items">
-      @for (item of menuItems; track $index) {
+      @for (item of menuItems; track item.label) {
         @if (!item.divider) {
-          <button class="menu-item" (click)="handleItemClick(item)">
+          <button 
+            class="menu-item" 
+            (click)="handleItemClick($event, item)"
+          >
             {{ item.label }}
           </button>
         } @else {

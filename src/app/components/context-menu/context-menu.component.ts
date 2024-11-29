@@ -1,58 +1,85 @@
-import { Component, Input, signal, HostListener, OnInit } from '@angular/core';
+import { 
+  Component, 
+  signal, 
+  HostListener, 
+  OnInit, 
+  ChangeDetectionStrategy,
+  computed
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FileDownloadService } from '../../services/file-download.service';
 import { OpenAppService } from '../../services/open-app.service';
 import { contextMenu } from '../../models/menus/menu-data';
 import { MenuItem } from '../../models/menus/menu-item.interface';
+import { Position } from '../../models/desktop.models';
+
+interface MenuDimensions {
+  readonly width: number;
+  readonly height: number;
+}
+
+const MENU_DIMENSIONS: MenuDimensions = {
+  width: 256,
+  height: 200
+} as const;
 
 @Component({
   selector: 'app-context-menu',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './context-menu.component.html',
-  styleUrls: ['./context-menu.component.scss']
+  styleUrls: ['./context-menu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContextMenuComponent implements OnInit {
-  @Input() menuItems: MenuItem[] = [];
+  protected menuItems: MenuItem[] = [];
   
-  isVisible = signal<boolean>(false);
-  position = signal<{ x: number; y: number }>({ x: 0, y: 0 });
+  protected readonly isVisible = signal<boolean>(false);
+  protected readonly position = signal<Position>({ x: 0, y: 0 });
+  
+  private readonly viewport = computed(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight
+  }));
 
   constructor(
-    private fileDownloadService: FileDownloadService,
-    private openAppService: OpenAppService
+    private readonly fileDownloadService: FileDownloadService,
+    private readonly openAppService: OpenAppService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.menuItems = contextMenu(this.openAppService, this.fileDownloadService);
   }
 
-  show(x: number, y: number) {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const menuWidth = 256; 
-    const menuHeight = 200; 
-
-    const adjustedX = Math.min(x, viewportWidth - menuWidth);
-    const adjustedY = Math.min(y, viewportHeight - menuHeight);
-
-    this.position.set({ x: adjustedX, y: adjustedY });
+  show(x: number, y: number): void {
+    const adjustedPosition = this.calculateAdjustedPosition(x, y);
+    this.position.set(adjustedPosition);
     this.isVisible.set(true);
   }
 
-  hide() {
+  hide(): void {
     this.isVisible.set(false);
   }
 
-  handleItemClick(item: MenuItem) {
+  handleItemClick(event: Event, item: MenuItem): void {
+    event.stopPropagation();
     item.action();
     this.hide();
   }
 
   @HostListener('document:click')
-  onDocumentClick() {
+  protected onDocumentClick(): void {
     if (this.isVisible()) {
       this.hide();
     }
+  }
+
+  private calculateAdjustedPosition(x: number, y: number): Position {
+    const { width: viewportWidth, height: viewportHeight } = this.viewport();
+    
+    return {
+      x: Math.min(x, viewportWidth - MENU_DIMENSIONS.width),
+      y: Math.min(y, viewportHeight - MENU_DIMENSIONS.height)
+    };
   }
 }

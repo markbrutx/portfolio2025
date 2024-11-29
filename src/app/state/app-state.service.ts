@@ -4,7 +4,6 @@ import { BehaviorSubject } from 'rxjs';
 export interface AppState {
   isDragging: boolean;
   maximizedWindowId: string | null;
-  [key: string]: any;
 }
 
 @Injectable({

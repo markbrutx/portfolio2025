@@ -1,9 +1,9 @@
 <div class="desktop">
   <div class="windows-area">
-    @for (app of openApps; track app.id) {
+    @for (app of openApps(); track app.id) {
       @if (app.isOpen && app.config) {
         <app-window
-          [config]="app.config!"
+          [config]="app.config"
           [initialPosition]="getSafeInitialPosition(app)"
           (close)="closeApp(app.id)"
         ></app-window>

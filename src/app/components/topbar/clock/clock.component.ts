@@ -6,8 +6,19 @@ import {
   ChangeDetectionStrategy,
   PLATFORM_ID,
   NgZone,
+  signal,
+  Signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+
+const TIME_FORMAT_OPTIONS = {
+  weekday: 'short',
+  month: 'short',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: true,
+} as const;
 
 @Component({
   selector: 'app-clock',
@@ -17,11 +28,11 @@ import { isPlatformBrowser } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClockComponent implements OnInit, OnDestroy {
-  currentTime: string = '';
-  private timerId: any;
+  protected readonly currentTime = signal('');
+  private timerId: number | null = null;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
+    @Inject(PLATFORM_ID) private platformId: string,
     private ngZone: NgZone
   ) {}
 
@@ -29,7 +40,7 @@ export class ClockComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.ngZone.runOutsideAngular(() => {
         this.updateTime();
-        this.timerId = setInterval(() => {
+        this.timerId = window.setInterval(() => {
           this.ngZone.run(() => this.updateTime());
         }, 60000);
       });
@@ -37,22 +48,18 @@ export class ClockComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.timerId) {
+    if (this.timerId !== null) {
       clearInterval(this.timerId);
+      this.timerId = null;
     }
   }
 
   private updateTime(): void {
     const now = new Date();
-    this.currentTime = now
-      .toLocaleString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      })
-      .replace(',', '');
+    this.currentTime.set(
+      now
+        .toLocaleString('en-US', TIME_FORMAT_OPTIONS)
+        .replace(',', '')
+    );
   }
 }
