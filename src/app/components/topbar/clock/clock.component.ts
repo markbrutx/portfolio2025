@@ -2,10 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
+  PLATFORM_ID,
+  signal,
+  effect,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { interval } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { isPlatformBrowser } from '@angular/common';
 
 const TIME_FORMAT_OPTIONS = {
   weekday: 'short',
@@ -24,20 +26,27 @@ const TIME_FORMAT_OPTIONS = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClockComponent {
-  private readonly now = toSignal(
-    interval(60000).pipe(
-      startWith(0),
-      map(() => new Date())
-    ),
-    { initialValue: new Date() }
-  );
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly currentDate = signal(new Date());
+
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      effect(() => {
+        const timer = setInterval(() => {
+          this.currentDate.set(new Date());
+        }, 1000);
+        
+        return () => clearInterval(timer);
+      });
+    }
+  }
 
   protected readonly currentTime = computed(() => 
-    this.formatDisplayTime(this.now())
+    this.formatDisplayTime(this.currentDate())
   );
 
   protected readonly currentISOTime = computed(() =>
-    this.formatISOTime(this.now())
+    this.formatISOTime(this.currentDate())
   );
 
   private formatDisplayTime(date: Date): string {

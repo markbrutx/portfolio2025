@@ -3,11 +3,10 @@
 } @else {
   @if (!userReady) {
     <app-boot-screen (userReady)="userReady = true" />
-  } @else {
-    <div class="app-container" [class.visible]="userReady">
-      <app-top-bar />
-      <app-dock-panel (appOpened)="desktop.openApp($event)" />
-      <app-desktop #desktop />
-    </div>
-  }
+  }     
+  <div class="app-container" [class.visible]="userReady">
+    <app-top-bar />
+    <app-dock-panel (appOpened)="desktop.openApp($event)" />
+    <app-desktop #desktop />
+  </div>
 }
