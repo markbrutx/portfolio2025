@@ -2,20 +2,20 @@
   class="window-container"
   [ngClass]="{ active: isActive, maximized: isMaximized }"
   [ngStyle]="{
-    width: isMaximized ? '100%' : config.width + 'px',
-    height: isMaximized ? 'calc(100vh - 2rem)' : config.height + 'px'
+    width: isMaximized ? '100%' : config().width + 'px',
+    height: isMaximized ? 'calc(100vh - 2rem)' : config().height + 'px'
   }"
   (mousedown)="activateWindow()"
   #window
 >
   <div class="window-header" (mousedown)="startDrag($event)">
     <app-traffic-lights
-      [allowMaximize]="config.allowMaximize"
+      [allowMaximize]="config().allowMaximize"
       (close)="closeWindow()"
       (maximize)="toggleMaximize()"
       (minimize)="minimizeWindow()"
     ></app-traffic-lights>
-    <div class="window-title">{{ config.title }}</div>
+    <div class="window-title">{{ config().title }}</div>
   </div>
   <div class="window-content" #windowContent></div>
 </div>

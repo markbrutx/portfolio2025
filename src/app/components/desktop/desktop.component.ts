@@ -2,14 +2,13 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  Inject,
+  inject,
   OnDestroy,
   PLATFORM_ID,
   NgZone,
   ViewChild,
   HostListener,
   signal,
-  computed
 } from '@angular/core';
 import { Position, OpenApp, DesktopAppConfig } from '../../models/desktop.models';
 import { AppID } from '../../shared/app-id.enum';
@@ -47,13 +46,13 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   @ViewChild(ContextMenuComponent) private readonly contextMenu!: ContextMenuComponent;
 
-  constructor(
-    @Inject(PLATFORM_ID) private readonly platformId: string,
-    private readonly positionService: PositionService,
-    private readonly openAppService: OpenAppService,
-    private readonly appRegistry: DesktopAppRegistryService,
-    private readonly ngZone: NgZone
-  ) {
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly positionService = inject(PositionService);
+  private readonly openAppService = inject(OpenAppService);
+  private readonly appRegistry = inject(DesktopAppRegistryService);
+  private readonly ngZone = inject(NgZone);
+
+  constructor() {
     this.initializeAppSubscription();
   }
 
@@ -97,7 +96,6 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
       const openAppsWithPositions = currentApps
         .filter(a => a.isOpen && a.id !== app.id);
       
-      console.log('Getting position for app:', app.id, 'current open apps:', openAppsWithPositions);
       
       return this.positionService.getNextPosition(
         openAppsWithPositions,

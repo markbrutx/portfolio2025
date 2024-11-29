@@ -1,13 +1,12 @@
 import {
   Component,
-  Output,
-  EventEmitter,
+  output,
+  inject,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   OnInit,
-  Inject,
+  PLATFORM_ID
 } from '@angular/core';
-import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -18,16 +17,16 @@ import { isPlatformBrowser } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BootScreenComponent implements OnInit {
-  @Output() userReady = new EventEmitter<void>();
+  userReady = output<void>();
 
   progress = 0;
   splashScreenHidden = false;
   totalDuration = 1000;
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly platformId = inject(PLATFORM_ID);
+
+  constructor() {}
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {

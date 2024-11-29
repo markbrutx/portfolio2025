@@ -1,6 +1,10 @@
 <div class="container">
-  <button class="close-light" (click)="onClose()">
-    <svg width="7" height="7" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <button 
+    class="close-light" 
+    (click)="onClose()"
+    aria-label="Close window"
+    type="button">
+    <svg width="7" height="7" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path
         stroke="#000"
         stroke-width="1.2"
@@ -9,8 +13,12 @@
       />
     </svg>
   </button>
-  <button class="minimize-light" (click)="onMinimize()">
-    <svg fill="none" xmlns="http://www.w3.org/2000/svg" width="6" height="1">
+  <button 
+    class="minimize-light" 
+    (click)="onMinimize()"
+    aria-label="Minimize window"
+    type="button">
+    <svg fill="none" xmlns="http://www.w3.org/2000/svg" width="6" height="1" aria-hidden="true">
       <path
         stroke="#000"
         stroke-linecap="round"
@@ -20,8 +28,12 @@
     </svg>
   </button>
   <button
-    [class.disabled]="!allowMaximize"
-    class="stretch-light" (click)="onMaximize()">
+    [class.disabled]="!allowMaximize()"
+    class="stretch-light" 
+    (click)="onMaximize()"
+    [attr.aria-label]="allowMaximize() ? 'Maximize window' : 'Maximize not available'"
+    [attr.aria-disabled]="!allowMaximize()"
+    type="button">
     <svg
       viewBox="0 0 13 13"
       xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +41,7 @@
       clip-rule="evenodd"
       stroke-linejoin="round"
       stroke-miterlimit="2"
-    >
+      aria-hidden="true">
       <path
         d="M4.871 3.553L9.37 8.098V3.553H4.871zm3.134 5.769L3.506 4.777v4.545h4.499z"
       />

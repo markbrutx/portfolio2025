@@ -1,3 +1,7 @@
-<div class="clock">
+<time 
+  class="clock" 
+  [attr.datetime]="currentISOTime()"
+  role="timer"
+  aria-label="Current time">
   {{ currentTime() }}
-</div>
+</time>

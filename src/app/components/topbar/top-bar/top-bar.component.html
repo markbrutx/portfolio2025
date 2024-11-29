@@ -1,13 +1,35 @@
-<div class="top-bar">
-  <app-menu-item class="apple" [menuItems]="appleMenu" [isAppleMenu]="true">
-    <img src="assets/icons/apple.svg" alt="Apple" />
+<nav 
+  class="top-bar" 
+  role="menubar"
+  aria-label="Main menu">
+  <app-menu-item 
+    class="apple" 
+    [menuItems]="appleMenuItems()" 
+    [isAppleMenu]="true">
+    <img 
+      src="assets/icons/apple.svg" 
+      alt="Apple menu" 
+      width="16" 
+      height="16" />
   </app-menu-item>
-  <app-menu-item class="finder" [menuItems]="finderMenu">
+  
+  <app-menu-item 
+    class="finder" 
+    [menuItems]="finderMenuItems()">
     <span class="finder-text">Finder</span>
   </app-menu-item>
-  <app-menu-item class="help" [menuItems]="helpMenu">
+  
+  <app-menu-item 
+    class="help" 
+    [menuItems]="helpMenuItems()">
     Help
   </app-menu-item>
-  <div class="spacer"></div>
+  
+  <div 
+    class="spacer" 
+    role="separator" 
+    aria-hidden="true">
+  </div>
+  
   <app-clock></app-clock>
-</div>
+</nav>

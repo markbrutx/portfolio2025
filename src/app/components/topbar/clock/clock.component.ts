@@ -1,15 +1,11 @@
 import {
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit,
   ChangeDetectionStrategy,
-  PLATFORM_ID,
-  NgZone,
-  signal,
-  Signal,
+  Component,
+  computed,
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { interval } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 const TIME_FORMAT_OPTIONS = {
   weekday: 'short',
@@ -27,39 +23,30 @@ const TIME_FORMAT_OPTIONS = {
   styleUrls: ['./clock.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ClockComponent implements OnInit, OnDestroy {
-  protected readonly currentTime = signal('');
-  private timerId: number | null = null;
+export class ClockComponent {
+  private readonly now = toSignal(
+    interval(60000).pipe(
+      startWith(0),
+      map(() => new Date())
+    ),
+    { initialValue: new Date() }
+  );
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: string,
-    private ngZone: NgZone
-  ) {}
+  protected readonly currentTime = computed(() => 
+    this.formatDisplayTime(this.now())
+  );
 
-  ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.ngZone.runOutsideAngular(() => {
-        this.updateTime();
-        this.timerId = window.setInterval(() => {
-          this.ngZone.run(() => this.updateTime());
-        }, 60000);
-      });
-    }
+  protected readonly currentISOTime = computed(() =>
+    this.formatISOTime(this.now())
+  );
+
+  private formatDisplayTime(date: Date): string {
+    return date
+      .toLocaleString('en-US', TIME_FORMAT_OPTIONS)
+      .replace(',', '');
   }
 
-  ngOnDestroy(): void {
-    if (this.timerId !== null) {
-      clearInterval(this.timerId);
-      this.timerId = null;
-    }
-  }
-
-  private updateTime(): void {
-    const now = new Date();
-    this.currentTime.set(
-      now
-        .toLocaleString('en-US', TIME_FORMAT_OPTIONS)
-        .replace(',', '')
-    );
+  private formatISOTime(date: Date): string {
+    return date.toISOString();
   }
 }

@@ -3,14 +3,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  EventEmitter,
-  Input,
+  inject,
+  input,
+  output,
   OnDestroy,
-  Output,
   ViewChild,
   HostListener,
   PLATFORM_ID,
-  Inject,
   NgZone,
   ViewContainerRef,
   EnvironmentInjector,
@@ -32,27 +31,25 @@ import { TrafficLightsComponent } from '../traffic-lights/traffic-lights.compone
   imports: [NgClass, NgStyle, TrafficLightsComponent],
 })
 export class WindowComponent implements AfterViewInit, OnDestroy {
-  @Input() config!: DesktopAppConfig;
-  @Input() initialPosition: Position = { x: 100, y: 100 };
-  @Output() close = new EventEmitter<void>();
+  config = input.required<DesktopAppConfig>();
+  initialPosition = input<Position>({ x: 100, y: 100 });
+  close = output<void>();
 
   @ViewChild('window', { static: true }) windowElement!: ElementRef;
   @ViewChild('windowContent', { read: ViewContainerRef, static: true })
   contentRef!: ViewContainerRef;
 
-  position: Position = { ...this.initialPosition };
+  position: Position = { ...this.initialPosition() };
   isMaximized = false;
   isActive = false;
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private ngZone: NgZone,
-    private windowStyleService: WindowStyleService,
-    private windowBoundsService: WindowBoundsService,
-    public environmentInjector: EnvironmentInjector
-  ) {}
+  private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
+  private windowStyleService = inject(WindowStyleService);
+  private windowBoundsService = inject(WindowBoundsService);
+  public environmentInjector = inject(EnvironmentInjector);
 
   @HostListener('document:mousedown', ['$event'])
   deactivateWindow(event: MouseEvent) {
@@ -68,7 +65,7 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.ngZone.runOutsideAngular(() => {
-      this.position = { ...this.initialPosition };
+      this.position = { ...this.initialPosition() };
       this.updateWindowPosition();
       this.enforceBounds();
 
@@ -100,13 +97,13 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
   }
 
   toggleMaximize() {
-    if (!this.config.allowMaximize) return;
+    if (!this.config().allowMaximize) return;
     this.isMaximized = this.windowStyleService.toggleMaximize(
       this.windowElement.nativeElement,
       this.isMaximized,
-      this.config.width,
-      this.config.height,
-      this.config.id,
+      this.config().width,
+      this.config().height,
+      this.config().id,
       this.position
     );
   }
@@ -146,9 +143,10 @@ export class WindowComponent implements AfterViewInit, OnDestroy {
   }
 
   private loadAppContent() {
-    if (this.config?.component) {
+    const currentConfig = this.config();
+    if (currentConfig?.component) {
       this.contentRef.clear();
-      const componentRef = this.contentRef.createComponent(this.config.component, {
+      const componentRef = this.contentRef.createComponent(currentConfig.component, {
         environmentInjector: this.environmentInjector,
       });
 

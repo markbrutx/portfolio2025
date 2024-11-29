@@ -4,6 +4,7 @@ import {
   HostListener, 
   OnInit, 
   ChangeDetectionStrategy,
+  inject,
   computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -42,10 +43,10 @@ export class ContextMenuComponent implements OnInit {
     height: window.innerHeight
   }));
 
-  constructor(
-    private readonly fileDownloadService: FileDownloadService,
-    private readonly openAppService: OpenAppService
-  ) {}
+  private readonly fileDownloadService = inject(FileDownloadService);
+  private readonly openAppService = inject(OpenAppService);
+
+  constructor() {}
 
   ngOnInit(): void {
     this.menuItems = contextMenu(this.openAppService, this.fileDownloadService);

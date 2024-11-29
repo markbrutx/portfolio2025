@@ -1,15 +1,20 @@
 import {
-  Component,
-  Input,
-  ElementRef,
-  Renderer2,
-  OnDestroy,
-  OnInit,
   ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  signal,
 } from '@angular/core';
 import { MenuStateService } from '../../../state/menu-state.service';
 import { NgClass } from '@angular/common';
 import { ClickOutsideDirective } from '../../../directives/click-outside.directive';
+
+interface MenuItem {
+  label: string;
+  action: () => void;
+}
 
 @Component({
   selector: 'app-menu-item',
@@ -19,43 +24,26 @@ import { ClickOutsideDirective } from '../../../directives/click-outside.directi
   imports: [ClickOutsideDirective, NgClass],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MenuItemComponent implements OnInit, OnDestroy {
-  @Input() menuItems: { label: string; action: () => void }[] = [];
-  @Input() isAppleMenu = false;
+export class MenuItemComponent {
+  private readonly el = inject(ElementRef<HTMLElement>);
+  private readonly menuStateService = inject(MenuStateService);
+  private readonly isMouseInside = signal(false);
 
-  private unsubscribeCloseMenuListener?: () => void;
-  private isMouseInside = false;
+  readonly menuItems = input<MenuItem[]>([]);
+  readonly isAppleMenu = input(false);
+  readonly isMenuOpen = computed(() => this.isMouseInside());
 
-  constructor(
-    protected readonly el: ElementRef<HTMLElement>,
-    private readonly renderer: Renderer2,
-    protected readonly menuStateService: MenuStateService
-  ) {}
-
-  ngOnInit(): void {
-    this.unsubscribeCloseMenuListener = this.renderer.listen(
-      this.el.nativeElement,
-      'closeMenu',
-      () => this.closeMenu()
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribeCloseMenuListener?.();
+  protected closeMenu(): void {
+    this.isMouseInside.set(false);
     this.menuStateService.clearActiveMenu(this.el.nativeElement);
   }
 
-  openMenu(): void {
-    this.isMouseInside = true;
+  protected openMenu(): void {
+    this.isMouseInside.set(true);
     this.menuStateService.setActiveMenu(this.el.nativeElement);
   }
 
-  closeMenu(): void {
-    this.isMouseInside = false;
-    this.menuStateService.clearActiveMenu(this.el.nativeElement);
-  }
-
-  handleMouseMove(event: MouseEvent): void {
+  protected handleMouseMove(event: MouseEvent): void {
     const element = this.el.nativeElement;
     const dropdown = element.querySelector('.dropdown') as HTMLElement;
     const button = element.querySelector('button') as HTMLElement;
@@ -72,6 +60,14 @@ export class MenuItemComponent implements OnInit, OnDestroy {
     }
   }
 
+  protected onMenuEnter(): void {
+    this.openMenu();
+  }
+
+  protected onMenuLeave(event: MouseEvent): void {
+    this.handleMouseMove(event);
+  }
+
   private isInsideElement(element: HTMLElement, event: MouseEvent): boolean {
     const rect = element.getBoundingClientRect();
     return (
@@ -80,13 +76,5 @@ export class MenuItemComponent implements OnInit, OnDestroy {
       event.clientY >= rect.top &&
       event.clientY <= rect.bottom
     );
-  }
-
-  onMenuEnter(): void {
-    this.openMenu();
-  }
-
-  onMenuLeave(event: MouseEvent): void {
-    this.handleMouseMove(event);
   }
 }

@@ -1,21 +1,32 @@
 <div
   class="menu-item"
-  [ngClass]="{ 'apple': isAppleMenu }"
+  [ngClass]="{ 'apple': isAppleMenu() }"
   (mouseenter)="onMenuEnter()"
   (mouseleave)="onMenuLeave($event)"
   (appClickOutside)="closeMenu()"
->
-  <button>
+  role="menubar">
+  <button
+    type="button"
+    [attr.aria-expanded]="isMenuOpen()"
+    [attr.aria-haspopup]="true"
+    role="menuitem">
     <ng-content></ng-content>
   </button>
-  @if (menuStateService.isMenuActive(el.nativeElement)) {
-    <div class="dropdown">
-      @for (item of menuItems; track item; let i = $index) {
-        <button class="menu-item-button" (click)="item.action()">
+  @if (isMenuOpen()) {
+    <div 
+      class="dropdown" 
+      role="menu"
+      aria-label="Menu options">
+      @for (item of menuItems(); track item; let i = $index) {
+        <button 
+          class="menu-item-button" 
+          (click)="item.action()"
+          type="button"
+          role="menuitem">
           {{ item.label }}
         </button>
-        @if (i < menuItems.length - 1) {
-          <div class="divider"></div>
+        @if (i < menuItems().length - 1) {
+          <div class="divider" role="separator" aria-hidden="true"></div>
         }
       }
     </div>

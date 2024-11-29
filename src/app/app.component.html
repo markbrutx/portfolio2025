@@ -1,15 +1,13 @@
-<ng-container *ngIf="deviceService.isMobile$ | async; else desktopView">
-  <app-mobile-placeholder></app-mobile-placeholder>
-</ng-container>
-<ng-template #desktopView>
-  <ng-container *ngIf="!userReady; else appContainer">
-    <app-boot-screen (userReady)="userReady = true"></app-boot-screen>
-  </ng-container>
-  <ng-template #appContainer>
+@if (deviceService.isMobile$ | async) {
+  <app-mobile-placeholder />
+} @else {
+  @if (!userReady) {
+    <app-boot-screen (userReady)="userReady = true" />
+  } @else {
     <div class="app-container" [class.visible]="userReady">
-      <app-top-bar></app-top-bar>
-      <app-dock-panel (appOpened)="desktop.openApp($event)"></app-dock-panel>
-      <app-desktop #desktop></app-desktop>
+      <app-top-bar />
+      <app-dock-panel (appOpened)="desktop.openApp($event)" />
+      <app-desktop #desktop />
     </div>
-  </ng-template>
-</ng-template>
+  }
+}

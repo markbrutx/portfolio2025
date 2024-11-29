@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContactsService, Contact } from '../../../services/contacts.service';
 
@@ -10,14 +10,16 @@ import { ContactsService, Contact } from '../../../services/contacts.service';
   styleUrls: ['./contacts.component.scss']
 })
 export class ContactsComponent {
-  copiedField = signal<string>('');
-  contacts: Contact[];
+  protected readonly copiedField = signal<string>('');
+  protected readonly contacts: Contact[];
+  
+  private readonly contactsService = inject(ContactsService);
 
-  constructor(private contactsService: ContactsService) {
+  constructor() {
     this.contacts = this.contactsService.getContacts();
   }
 
-  handleCopy(text: string, id: string) {
+  handleCopy(text: string, id: string): void {
     navigator.clipboard.writeText(text);
     this.copiedField.set(id);
     setTimeout(() => this.copiedField.set(''), 2000);

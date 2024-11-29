@@ -1,10 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter, Input,
-  Output,
+  input,
+  output,
+  signal,
 } from '@angular/core'
-import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-traffic-lights',
@@ -14,22 +14,25 @@ import {NgIf} from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrafficLightsComponent {
-  @Input() allowMaximize: boolean = true
-  @Output() close = new EventEmitter<void>()
-  @Output() maximize = new EventEmitter<void>()
-  @Output() minimize = new EventEmitter<void>()
+  readonly allowMaximize = input<boolean>(true)
+  readonly close = output<void>()
+  readonly maximize = output<void>()
+  readonly minimize = output<void>()
 
-  onClose() {
+  protected readonly isMaximized = signal<boolean>(false)
+
+  protected onClose(): void {
     this.close.emit()
   }
 
-  onMaximize() {
-    if (this.allowMaximize) {
+  protected onMaximize(): void {
+    if (this.allowMaximize()) {
+      this.isMaximized.update(state => !state)
       this.maximize.emit()
     }
   }
 
-  onMinimize() {
+  protected onMinimize(): void {
     this.minimize.emit()
   }
 }
