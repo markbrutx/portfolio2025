@@ -31,4 +31,5 @@ npm start
 npm test     # Run tests
 npm run lint # Run linting
 npm run build # Build project
+http-server dist/portfolio2025/browser # test build
 ```
