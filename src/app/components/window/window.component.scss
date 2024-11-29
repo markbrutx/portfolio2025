@@ -38,6 +38,8 @@
   border-bottom: 1px solid #{vars.$window-header-border-color};
   user-select: none;
   flex-shrink: 0;
+  border-top-left-radius: #{vars.$window-border-radius};
+  border-top-right-radius: #{vars.$window-border-radius};
 }
 
 .window-title {
@@ -56,6 +58,8 @@
   background-color: #{vars.$window-content-bg-color};
   position: relative;
   height: 100%;
+  border-bottom-left-radius: #{vars.$window-border-radius};
+  border-bottom-right-radius: #{vars.$window-border-radius};
 }
 
 app-traffic-lights {

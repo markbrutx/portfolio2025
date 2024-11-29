@@ -27,12 +27,15 @@
   &.apple {
     button {
       padding: 0.1rem 0.5rem;
+      display: flex;
+      align-items: center;
+      height: 100%;
     }
   }
 
   .dropdown {
     position: absolute;
-    top: calc(100% + 0.1rem);
+    top: 100%;
     left: 0;
 
     background-color: #{vars.$color-dropdown-bg};

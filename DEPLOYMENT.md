@@ -58,7 +58,7 @@ Add the following configuration:
 ```nginx
 server {
     listen 80;
-    server_name 194.87.143.36;
+    server_name host;
 
     root /var/www/portfolio2025/dist/portfolio2025/browser;
     index index.html;
@@ -96,7 +96,7 @@ When you need to update the application after pushing new changes to GitHub, fol
 
 1. Connect to your server via SSH
 ```bash
-ssh username@194.87.143.36
+ssh username@host
 ```
 
 2. Go to the project directory:
@@ -116,7 +116,7 @@ npm install
 
 5. Build the application:
 ```bash
-npm run build:prod
+npm run build
 ```
 
 6. Update permissions if needed:
@@ -129,6 +129,10 @@ sudo chown -R www-data:www-data /var/www/portfolio2025
 sudo systemctl restart nginx
 ```
 
+# If you encounter a "dubious ownership" error, first run:
+```bash
+git config --global --add safe.directory /var/www/portfolio2025
+```
 ## Troubleshooting
 
 1. Check Nginx logs:

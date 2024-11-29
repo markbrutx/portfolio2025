@@ -39,7 +39,6 @@ export const commonMenuActions = {
   share: (): MenuItem => ({
     label: 'Share',
     action: () => {
-      // Implement share functionality
       if (navigator.share) {
         navigator.share({
           title: 'M.N Portfolio 2025',

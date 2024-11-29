@@ -56,11 +56,6 @@
         font-size: 2rem;
         animation: float 6s ease-in-out infinite;
         opacity: 0.7;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(4px);
-        padding: 1rem;
-        border-radius: 50%;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         
         &:nth-child(1) {
           top: 20%;
@@ -111,7 +106,7 @@
   .contacts-grid {
     @include grid-container;
     max-width: 600px;
-    margin: -50px auto 0;
+    margin: 2rem auto 0;
     padding: 0 1.5rem 2rem;
     display: flex;
     flex-direction: column;
