@@ -1,4 +1,4 @@
-import { Injectable, inject, PLATFORM_ID, signal, OnDestroy } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID, signal, OnDestroy, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { DockItem } from '../models/dock-item.model';
@@ -21,6 +21,7 @@ interface DockAnimation {
 export class DockAnimationService implements OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly appStateService = inject(AppStateService);
+  private readonly ngZone = inject(NgZone);
 
   private readonly config = {
     baseWidth: 64,
@@ -59,7 +60,9 @@ export class DockAnimationService implements OnDestroy {
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      this.startAnimation();
+      this.ngZone.runOutsideAngular(() => {
+        this.startAnimation();
+      });
       this.appStateService.state$.subscribe(state => {
         this.isDragging.set(state.isDragging);
       });

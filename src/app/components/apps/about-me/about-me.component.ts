@@ -4,7 +4,11 @@ import {
   ElementRef,
   HostListener,
   ViewChild,
-  ChangeDetectionStrategy, signal, computed,
+  ChangeDetectionStrategy,
+  signal,
+  computed,
+  inject,
+  NgZone
 } from '@angular/core'
 import { VideoState } from './about-me.types'
 
@@ -18,6 +22,7 @@ import { VideoState } from './about-me.types'
 export class AboutMeComponent implements AfterViewInit {
   @ViewChild('video', { static: true })
   private readonly videoElement!: ElementRef<HTMLVideoElement>;
+  private readonly ngZone = inject(NgZone);
 
   private readonly state = signal<VideoState>({
     showWelcomeButton: false,
@@ -46,10 +51,14 @@ export class AboutMeComponent implements AfterViewInit {
   protected handleWelcomeClick(): void {
     this.updateState({ emojiAnimating: true });
 
-    setTimeout(() => {
-      this.updateState({ showWelcomeButton: false });
-      this.playVideo();
-    }, 1500);
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this.ngZone.run(() => {
+          this.updateState({ showWelcomeButton: false });
+          this.playVideo();
+        });
+      }, 1500);
+    });
   }
 
   private initializeVideo(): void {

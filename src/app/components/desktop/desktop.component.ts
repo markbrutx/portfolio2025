@@ -58,7 +58,7 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.initializeFirstApp();
+      this.initializeAnimations();
     }
   }
 
@@ -124,18 +124,20 @@ export class DesktopComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  private initializeFirstApp(): void {
-    this.ngZone.runOutsideAngular(() => {
-      requestAnimationFrame(() => {
-        const centerPosition = this.positionService.getCenterPosition(
-          INITIAL_WINDOW.width,
-          INITIAL_WINDOW.height
-        );
-        this.ngZone.run(() => {
-          this.openApp(AppID.AboutMe, centerPosition);
+  private initializeAnimations(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.ngZone.runOutsideAngular(() => {
+        requestAnimationFrame(() => {
+          const centerPosition = this.positionService.getCenterPosition(
+            INITIAL_WINDOW.width,
+            INITIAL_WINDOW.height
+          );
+          this.ngZone.run(() => {
+            this.openApp(AppID.AboutMe, centerPosition);
+          });
         });
       });
-    });
+    }
   }
 
   private calculateAppPosition(

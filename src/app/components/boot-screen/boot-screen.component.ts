@@ -5,7 +5,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   OnInit,
-  PLATFORM_ID
+  PLATFORM_ID,
+  NgZone
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -25,6 +26,7 @@ export class BootScreenComponent implements OnInit {
 
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly ngZone = inject(NgZone);
 
   constructor() {}
 
@@ -41,22 +43,31 @@ export class BootScreenComponent implements OnInit {
     const interval = 10;
     const step = (100 / this.totalDuration) * interval;
 
-    const timer = setInterval(() => {
-      this.progress += step;
-      this.cdr.markForCheck();
+    this.ngZone.runOutsideAngular(() => {
+      const timer = setInterval(() => {
+        this.progress += step;
+        this.ngZone.run(() => {
+          this.cdr.markForCheck();
+        });
 
-      if (this.progress >= 100) {
-        clearInterval(timer);
-        this.finishLoading();
-      }
-    }, interval);
+        if (this.progress >= 100) {
+          clearInterval(timer);
+          this.finishLoading();
+        }
+      }, interval);
+    });
   }
 
   private finishLoading() {
     this.splashScreenHidden = true;
     this.cdr.markForCheck();
-    setTimeout(() => {
-      this.userReady.emit();
-    }, 300);
+    
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this.ngZone.run(() => {
+          this.userReady.emit();
+        });
+      }, 300);
+    });
   }
 }
