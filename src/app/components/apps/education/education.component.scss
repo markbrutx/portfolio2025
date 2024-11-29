@@ -1,16 +1,17 @@
 @use "sass:color";
 
+// Variables
 $background-color: #fdfbf7;
 $text-primary: #2c3e50;
-$text-secondary: #666666;
+$text-secondary: #666;
 $border-radius: 12px;
 $transition-duration: 0.3s;
-$card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-$hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+$card-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+$hover-shadow: 0 4px 12px rgba(0, 0, 0, .15);
 $accent-color: #4a90e2;
-$gradient-accent: linear-gradient(135deg, $accent-color, color.scale($accent-color, $lightness: 36.4285714286%));
-$handwritten-color: #2c3e50;
+$gradient-accent: linear-gradient(135deg, $accent-color, color.scale($accent-color, $lightness: 36%));
 
+// Mixins
 @mixin card-base {
   background: white;
   border-radius: $border-radius;
@@ -27,19 +28,22 @@ $handwritten-color: #2c3e50;
   padding: 2rem;
 }
 
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Animations
 @keyframes floatEmoji {
-  0%, 100% { 
-    transform: translateY(0) rotate(0deg); 
-  }
-  50% { 
-    transform: translateY(-10px) rotate(5deg); 
-  }
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-10px) rotate(5deg); }
 }
 
 @keyframes fadeScale {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(.95);
   }
   to {
     opacity: 1;
@@ -55,15 +59,6 @@ $handwritten-color: #2c3e50;
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes floatEmoji {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
   }
 }
 
@@ -84,14 +79,12 @@ $handwritten-color: #2c3e50;
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, .5);
   backdrop-filter: blur(8px);
   z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   padding: 2rem;
-  animation: fadeScale 0.3s ease-out;
+  animation: fadeScale .3s ease-out;
 
   .modal-content {
     position: relative;
@@ -100,7 +93,7 @@ $handwritten-color: #2c3e50;
     background: $background-color;
     border-radius: $border-radius;
     overflow: hidden;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, .2);
 
     img {
       width: 100%;
@@ -113,21 +106,19 @@ $handwritten-color: #2c3e50;
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, .5);
     color: white;
     border: none;
     width: 24px;
     height: 24px;
     border-radius: 12px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center;
     font-size: 14px;
     transition: background-color $transition-duration;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, .7);
     }
   }
 }
@@ -145,28 +136,16 @@ $handwritten-color: #2c3e50;
   
   .header-background {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: 1;
-    background-image: url('/assets/kazatu.jpg');
-    background-size: cover;
-    background-position: center;
+    background: url('/assets/kazatu.jpg') center/cover;
     transform: scale(1.1);
-    transition: transform 0.3s ease-out;
+    transition: transform .3s ease-out;
 
     .overlay {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        135deg,
-        rgba(0, 0, 0, 0.85),
-        rgba(0, 0, 0, 0.75)
-      );
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 0, 0, .85), rgba(0, 0, 0, .75));
       z-index: 2;
     }
   }
@@ -177,10 +156,7 @@ $handwritten-color: #2c3e50;
 
   .floating-elements {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+    inset: 0;
     z-index: 2;
     pointer-events: none;
 
@@ -188,25 +164,12 @@ $handwritten-color: #2c3e50;
       position: absolute;
       font-size: 2rem;
       animation: floatEmoji 3s ease-in-out infinite;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .2));
 
-      &:nth-child(1) {
-        top: 20%;
-        left: 15%;
-        animation-delay: 0s;
-      }
-
-      &:nth-child(2) {
-        top: 30%;
-        right: 20%;
-        animation-delay: -1s;
-      }
-
-      &:nth-child(3) {
-        bottom: 25%;
-        left: 30%;
-        animation-delay: -2s;
-      }
+      &:nth-child(1) { top: 20%; left: 15%; }
+      &:nth-child(2) { top: 30%; right: 20%; animation-delay: .5s; }
+      &:nth-child(3) { bottom: 25%; left: 25%; animation-delay: 1s; }
+      &:nth-child(4) { bottom: 20%; right: 15%; animation-delay: 1.5s; }
     }
   }
 
@@ -217,7 +180,7 @@ $handwritten-color: #2c3e50;
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, .3);
 
     h1 {
       font-size: 3rem;
@@ -241,15 +204,6 @@ $handwritten-color: #2c3e50;
         opacity: 0.9;
       }
     }
-  }
-}
-
-@keyframes floatEmoji {
-  0%, 100% { 
-    transform: translateY(0) rotate(0deg) scale(1); 
-  }
-  50% { 
-    transform: translateY(-20px) rotate(5deg) scale(1.1); 
   }
 }
 
