@@ -22,13 +22,14 @@ export class DockItemComponent {
   readonly index = input.required<string>();
   readonly isActive = input<boolean>(true);
   readonly scale = input.required<number>();
+  readonly bounce = input<number>(0);
   readonly clicked = output<void>();
 
   protected readonly sizeRem = computed(() => 4 * this.scale());
   protected readonly tooltipVisible = signal(false);
 
   protected readonly iconStyle = computed(() => ({
-    transform: `scale(${this.scale()})`,
+    transform: `scale(${this.scale()}) translateY(${this.bounce()}px)`,
     transition: this.getTransitionStyle(),
     transformOrigin: 'bottom',
     willChange: 'transform'
@@ -36,21 +37,11 @@ export class DockItemComponent {
 
   private previousScale = 1;
 
-
   protected readonly tooltipStyle = computed(() => ({
     transform: `translateX(-50%) translateY(-${this.sizeRem()}rem)`,
     transition: this.getTransitionStyle(),
     willChange: 'transform'
   }));
-
-
-
-  private getTransitionStyle(): string {
-    const currentScale = this.scale();
-    const duration = currentScale > this.previousScale ? '80ms' : '200ms';
-    this.previousScale = currentScale;
-    return `transform ${duration} cubic-bezier(0.2, 0, 0, 1)`;
-  }
 
   protected showTooltip(): void {
     this.tooltipVisible.set(true);
@@ -62,5 +53,12 @@ export class DockItemComponent {
 
   protected onClick(): void {
     this.clicked.emit();
+  }
+
+  private getTransitionStyle(): string {
+    const currentScale = this.scale();
+    const duration = currentScale > this.previousScale ? '80ms' : '200ms';
+    this.previousScale = currentScale;
+    return `transform ${duration} cubic-bezier(0.34, 1.56, 0.64, 1)`;
   }
 }

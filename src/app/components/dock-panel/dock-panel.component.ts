@@ -9,7 +9,7 @@ import {
   output,
   OnDestroy,
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, NgFor, NgIf } from '@angular/common';
 import { DockItemComponent } from '../dock-item/dock-item.component';
 import { FileDownloadService } from '../../services/file-download.service';
 import { AppID } from '../../shared/app-id.enum';
@@ -26,7 +26,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./dock-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [DockItemComponent],
+  imports: [DockItemComponent]
 })
 export class DockPanelComponent implements AfterViewInit, OnDestroy {
   protected readonly dockPanel = viewChild.required<ElementRef>('dockPanel');
@@ -41,8 +41,13 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   private readonly dockAnimationService = inject(DockAnimationService);
 
   protected readonly dockItems = signal<ReadonlyArray<DockItem>>([]);
+  protected readonly animations = signal<ReadonlyArray<{ appId: string; scale: number; bounce: number }>>([]);
   protected readonly isDragging = signal(false);
   protected readonly isMaximizedWindow = signal(false);
+
+  protected getAnimationForItem(appId: string): { scale: number; bounce: number } | undefined {
+    return this.animations().find(a => a.appId === appId);
+  }
 
   constructor() {
     this.dockItemsService.dockItems$
@@ -54,8 +59,8 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
 
     this.dockAnimationService.items$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(items => {
-        this.dockItems.set(items);
+      .subscribe(animations => {
+        this.animations.set(animations);
       });
 
     effect(() => {
@@ -84,6 +89,8 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   }
 
   protected async openApp(appId: AppID): Promise<void> {
+    this.dockAnimationService.triggerBounceAnimation(appId);
+
     if (appId === AppID.CV) {
       await this.handleCVDownload();
     } else if (appId === AppID.Youtube) {

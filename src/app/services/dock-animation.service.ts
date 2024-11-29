@@ -9,6 +9,12 @@ interface MousePosition {
   y: number | null;
 }
 
+interface DockAnimation {
+  appId: string;
+  scale: number;
+  bounce: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,28 +25,32 @@ export class DockAnimationService implements OnDestroy {
   private readonly config = {
     baseWidth: 64,
     distanceLimit: 64 * 6,
-    distances: [
-      0,          // Center
-      64,         // Near zone
-      64 * 2,     // Medium zone
-      64 * 3,     // Far zone
-      64 * 4,     // Very far zone
-      64 * 5,     // Almost no effect
-      64 * 6      // No effect
+    distanceInput: [
+      0,              // Center
+      64 * 1,         // Distance 1
+      64 * 2,         // Distance 2
+      64 * 3,         // Distance 3
+      64 * 4,         // Distance 4
+      64 * 5,         // Distance 5
+      64 * 6          // Maximum distance
     ],
-    scales: [
-      2,      // Maximum scale at center
-      1.7,    // Near zone
-      1.4,    // Medium zone
-      1.2,    // Far zone
-      1.1,    // Very far zone
-      1.05,   // Almost no effect
-      1       // No effect
-    ]
+    scaleOutput: [
+      2,              // Maximum scale at center (2x)
+      1.414,          // Scale at distance 1 (√2)
+      1.414,          // Scale at distance 2
+      1.2,            // Scale at distance 3
+      1.1,            // Scale at distance 4
+      1.05,           // Scale at distance 5
+      1               // No scaling at maximum distance
+    ],
+    bounce: {
+      duration: 200,
+      height: 40,
+    }
   } as const;
 
   private animationFrame: number | null = null;
-  private readonly itemsSubject = new BehaviorSubject<DockItem[]>([]);
+  private readonly itemsSubject = new BehaviorSubject<DockAnimation[]>([]);
   private readonly isDragging = signal<boolean>(false);
   private mousePosition: MousePosition = { x: null, y: null };
   private isAnimating = false;
@@ -57,7 +67,12 @@ export class DockAnimationService implements OnDestroy {
   }
 
   setItems(items: DockItem[]): void {
-    this.itemsSubject.next(items);
+    const animations = items.map(item => ({
+      appId: item.appId,
+      scale: 1,
+      bounce: 0
+    }));
+    this.itemsSubject.next(animations);
   }
 
   setMousePosition(x: number | null, y: number | null): void {
@@ -68,8 +83,38 @@ export class DockAnimationService implements OnDestroy {
 
     if (!this.isAnimating) {
       const items = this.itemsSubject.value;
-      this.updateItemsScale(items.map(item => ({ ...item, scale: 1 })));
+      this.updateItemsAnimation(items.map(item => ({ ...item, scale: 1 })));
     }
+  }
+
+  async triggerBounceAnimation(appId: string): Promise<void> {
+    const items = this.itemsSubject.value;
+    const itemIndex = items.findIndex(item => item.appId === appId);
+    
+    if (itemIndex === -1) return;
+
+    const startTime = performance.now();
+    const animate = () => {
+      const currentTime = performance.now();
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / this.config.bounce.duration, 1);
+      
+      const bounceHeight = Math.sin(progress * Math.PI) * this.config.bounce.height;
+      
+      const updatedItems = [...items];
+      updatedItems[itemIndex] = { ...updatedItems[itemIndex], bounce: -bounceHeight };
+      
+      this.updateItemsAnimation(updatedItems);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        updatedItems[itemIndex] = { ...updatedItems[itemIndex], bounce: 0 };
+        this.updateItemsAnimation(updatedItems);
+      }
+    };
+
+    requestAnimationFrame(animate);
   }
 
   private startAnimation(): void {
@@ -78,10 +123,11 @@ export class DockAnimationService implements OnDestroy {
         const items = this.itemsSubject.value;
         const updatedItems = items.map(item => ({
           ...item,
-          scale: this.calculateScale(item)
+          scale: this.calculateScale(item),
+          bounce: item.bounce
         }));
 
-        this.updateItemsScale(updatedItems);
+        this.updateItemsAnimation(updatedItems);
       }
       this.animationFrame = requestAnimationFrame(animate);
     };
@@ -89,7 +135,7 @@ export class DockAnimationService implements OnDestroy {
     this.animationFrame = requestAnimationFrame(animate);
   }
 
-  private calculateScale(item: DockItem): number {
+  private calculateScale(item: DockAnimation): number {
     const element = document.getElementById(`dock-item-${item.appId}`);
     if (!element || !this.mousePosition.x) return 1;
 
@@ -103,26 +149,26 @@ export class DockAnimationService implements OnDestroy {
   }
 
   private interpolateScale(distance: number): number {
-    const { distances, scales } = this.config;
-
+    const { distanceInput, scaleOutput } = this.config;
+    
     let i = 0;
-    while (i < distances.length && distances[i] < distance) {
+    while (i < distanceInput.length && distanceInput[i] < distance) {
       i++;
     }
 
-    if (i === 0) return scales[0];
-    if (i === distances.length) return scales[scales.length - 1];
+    if (i === 0) return scaleOutput[0];
+    if (i === distanceInput.length) return scaleOutput[scaleOutput.length - 1];
 
-    const x0 = distances[i - 1];
-    const x1 = distances[i];
-    const y0 = scales[i - 1];
-    const y1 = scales[i];
+    const x0 = distanceInput[i - 1];
+    const x1 = distanceInput[i];
+    const y0 = scaleOutput[i - 1];
+    const y1 = scaleOutput[i];
 
     const t = (distance - x0) / (x1 - x0);
     return y0 + (y1 - y0) * Math.max(0, Math.min(1, t));
   }
 
-  private updateItemsScale(items: DockItem[]): void {
+  private updateItemsAnimation(items: DockAnimation[]): void {
     this.itemsSubject.next(items);
   }
 

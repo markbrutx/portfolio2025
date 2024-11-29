@@ -4,6 +4,7 @@ export interface DockItem {
   iconSrc: string;
   label: string;
   scale: number;
+  bounce: number;
   appId: AppID;
   isActive: boolean;
 }

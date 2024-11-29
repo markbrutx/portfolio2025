@@ -5,12 +5,14 @@
   #dockPanel
 >
   @for (item of dockItems(); track item.appId) {
+    @let animation = getAnimationForItem(item.appId);
     <app-dock-item
       [iconSrc]="item.iconSrc"
       [label]="item.label"
       [index]="item.appId"
       [isActive]="item.isActive"
-      [scale]="item.scale"
+      [scale]="animation?.scale ?? 1"
+      [bounce]="animation?.bounce ?? 0"
       (clicked)="openApp(item.appId)"
     />
     @if (shouldShowDivider($index)) {
