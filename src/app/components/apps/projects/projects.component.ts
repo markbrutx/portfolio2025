@@ -48,6 +48,24 @@ export class ProjectsComponent {
       videoTitle: 'Watch my LeetCode journey (100+ videos)'
     },
     {
+      id: 'street-kid',
+      title: 'Street Kid',
+      shortDesc: 'Online browser-based business tycoon game',
+      icon: 'game-controller',
+      stats: [
+        { icon: 'users', text: 'Product Owner' },
+        { icon: 'google-chrome-logo', text: 'Browser Game' }
+      ],
+      tech: ['Next.js', 'Django', 'Redis', 'Celery'],
+      content: `A browser-based online game targeting the CIS audience, developed with the strong belief in the untapped 
+        potential of the browser gaming market. This belief has been validated by the later success of games like 
+        Hamster Kombat in the Telegram ecosystem. As the Product Owner, I initially handled all aspects including Frontend, Backend, 
+        game design, UI/UX, and collaboration with illustrators. The game focuses on business tycoon mechanics and 
+        adventurism, featuring an engaging gameplay loop that appeals to the target demographic.`,
+      videoUrl: 'https://www.youtube.com/watch?v=8_haUl5WMK4',
+      videoTitle: 'Watch Street Kid Demo'
+    },
+    {
       id: 'ranobe',
       title: 'RanobeRead',
       shortDesc: 'Personal web novel reader with AI-powered translations',
@@ -98,7 +116,8 @@ export class ProjectsComponent {
         searching periods.`,
       videoUrl: 'https://youtu.be/9cDuM8aH5Lw',
       videoTitle: 'Watch short demo of ApplicationTracker'
-    }
+    },
+    
   ];
 
   trackProject: TrackByFunction<Project> = (index: number, project: Project) => project.id;
