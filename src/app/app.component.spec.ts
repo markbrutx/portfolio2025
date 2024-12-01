@@ -34,7 +34,7 @@ describe('AppComponent', () => {
     expect(window.getComputedStyle(desktopElement!).width).toBe('100%')
     expect(window.getComputedStyle(desktopElement!).height).toBe('100vh')
     expect(window.getComputedStyle(desktopElement!).backgroundImage).toContain(
-      '/assets/backgrounds/macos-bg.jpg'
+      '/assets/backgrounds/macos-bg2.webp'
     )
   })
 
