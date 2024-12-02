@@ -1,6 +1,7 @@
 import { MenuItem } from './menu-item.interface';
 import { OpenAppService } from '../../services/open-app.service';
 import { FileDownloadService } from '../../services/file-download.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 // Common menu actions that can be reused across different menus
 export const commonMenuActions = {
@@ -22,9 +23,10 @@ export const commonMenuActions = {
     },
   }),
 
-  viewSource: (): MenuItem => ({
+  viewSource: (analyticsService?: AnalyticsService): MenuItem => ({
     label: 'View Source',
     action: () => {
+      analyticsService?.trackSourceCodeView();
       window.open('https://github.com/markbrutx/portfolio2025', '_blank');
     },
   }),
@@ -74,13 +76,14 @@ export const finderMenu = (openAppService: OpenAppService): MenuItem[] => [
   commonMenuActions.closeAllWindows(openAppService),
 ];
 
-export const helpMenu = (fileDownloadService: FileDownloadService): MenuItem[] => [
+export const helpMenu = (fileDownloadService: FileDownloadService, analyticsService?: AnalyticsService): MenuItem[] => [
   commonMenuActions.share(),
   commonMenuActions.downloadCV(fileDownloadService),
+  commonMenuActions.viewSource(analyticsService),
 ];
 
-export const contextMenu = (openAppService: OpenAppService, fileDownloadService: FileDownloadService): MenuItem[] => [
-  commonMenuActions.viewSource(),
+export const contextMenu = (openAppService: OpenAppService, fileDownloadService: FileDownloadService, analyticsService?: AnalyticsService): MenuItem[] => [
+  commonMenuActions.viewSource(analyticsService),
   commonMenuActions.closeAllWindows(openAppService),
   commonMenuActions.toggleFullscreen(),
   commonMenuActions.divider(),

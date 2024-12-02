@@ -11,6 +11,7 @@ import { MenuItemComponent } from '../menu-item/menu-item.component';
 import { OpenAppService } from '../../../services/open-app.service';
 import { ClockComponent } from '../clock/clock.component';
 import { FileDownloadService } from '../../../services/file-download.service';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 @Component({
   selector: 'app-top-bar',
@@ -23,6 +24,7 @@ import { FileDownloadService } from '../../../services/file-download.service';
 export class TopBarComponent {
   private readonly openAppService = inject(OpenAppService);
   private readonly fileDownloadService = inject(FileDownloadService);
+  private readonly analyticsService = inject(AnalyticsService);
 
   protected readonly appleMenuItems = signal<MenuItem[]>(appleMenu);
   
@@ -31,6 +33,14 @@ export class TopBarComponent {
   );
   
   protected readonly helpMenuItems = computed(() => 
-    helpMenu(this.fileDownloadService)
+    helpMenu(this.fileDownloadService, this.analyticsService)
   );
+
+  onMenuItemSelect(item: MenuItem): void {
+    this.analyticsService.trackMenuItemSelect(item.label);
+  }
+
+  viewSource(): void {
+    this.analyticsService.trackSourceCodeView();
+  }
 }

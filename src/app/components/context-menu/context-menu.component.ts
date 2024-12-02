@@ -10,6 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FileDownloadService } from '../../services/file-download.service';
 import { OpenAppService } from '../../services/open-app.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { contextMenu } from '../../models/menus/menu-data';
 import { MenuItem } from '../../models/menus/menu-item.interface';
 import { Position } from '../../models/desktop.models';
@@ -45,14 +46,20 @@ export class ContextMenuComponent implements OnInit {
 
   private readonly fileDownloadService = inject(FileDownloadService);
   private readonly openAppService = inject(OpenAppService);
+  private readonly analyticsService = inject(AnalyticsService);
 
   constructor() {}
 
   ngOnInit(): void {
-    this.menuItems = contextMenu(this.openAppService, this.fileDownloadService);
+    this.menuItems = contextMenu(
+      this.openAppService,
+      this.fileDownloadService,
+      this.analyticsService
+    );
   }
 
   show(x: number, y: number): void {
+    this.analyticsService.trackMenuOpen('context_menu');
     const adjustedPosition = this.calculateAdjustedPosition(x, y);
     this.position.set(adjustedPosition);
     this.isVisible.set(true);
@@ -64,8 +71,13 @@ export class ContextMenuComponent implements OnInit {
 
   handleItemClick(event: Event, item: MenuItem): void {
     event.stopPropagation();
+    this.onMenuItemClick(item);
     item.action();
     this.hide();
+  }
+
+  onMenuItemClick(item: MenuItem): void {
+    this.analyticsService.trackMenuItemSelect(item.label);
   }
 
   @HostListener('document:click')
