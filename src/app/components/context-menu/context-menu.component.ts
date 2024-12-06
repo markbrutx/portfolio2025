@@ -14,6 +14,7 @@ import { AnalyticsService } from '../../services/analytics.service';
 import { contextMenu } from '../../models/menus/menu-data';
 import { MenuItem } from '../../models/menus/menu-item.interface';
 import { Position } from '../../models/desktop.models';
+import { AnalyticsEvent } from '../../constants/analytics.constants';
 
 interface MenuDimensions {
   readonly width: number;
@@ -48,8 +49,6 @@ export class ContextMenuComponent implements OnInit {
   private readonly openAppService = inject(OpenAppService);
   private readonly analyticsService = inject(AnalyticsService);
 
-  constructor() {}
-
   ngOnInit(): void {
     this.menuItems = contextMenu(
       this.openAppService,
@@ -59,7 +58,7 @@ export class ContextMenuComponent implements OnInit {
   }
 
   show(x: number, y: number): void {
-    this.analyticsService.trackMenuOpen('context_menu');
+    this.analyticsService.trackUserInteraction(AnalyticsEvent.CONTEXT_MENU_OPENED);
     const adjustedPosition = this.calculateAdjustedPosition(x, y);
     this.position.set(adjustedPosition);
     this.isVisible.set(true);
@@ -77,7 +76,7 @@ export class ContextMenuComponent implements OnInit {
   }
 
   onMenuItemClick(item: MenuItem): void {
-    this.analyticsService.trackMenuItemSelect(item.label);
+    this.analyticsService.trackUserInteraction(AnalyticsEvent.USER_ENGAGED, { itemLabel: item.label });
   }
 
   @HostListener('document:click')

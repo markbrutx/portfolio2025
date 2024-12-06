@@ -51,7 +51,7 @@
           
           @if (project.videoUrl) {
             <div class="video-preview">
-              <a [href]="project.videoUrl" target="_blank" (click)="$event.stopPropagation()">
+              <a [href]="project.videoUrl" target="_blank" (click)="$event.stopPropagation(); watchVideo(project.id, project.videoUrl)">
                 <div class="video-icon">
                   <img src="assets/icons/play.svg" alt="play" class="play-icon">
                 </div>

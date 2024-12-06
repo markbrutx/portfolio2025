@@ -19,6 +19,8 @@ import { AppStateService } from '../../state/app-state.service';
 import { OpenAppService } from '../../services/open-app.service';
 import { DockAnimationService } from '../../services/dock-animation.service';
 import { Subject, takeUntil } from 'rxjs';
+import { AnalyticsService } from '../../services/analytics.service';
+import { AnalyticsEvent } from '../../constants/analytics.constants';
 
 @Component({
   selector: 'app-dock-panel',
@@ -39,6 +41,7 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   private readonly appStateService = inject(AppStateService);
   private readonly openAppService = inject(OpenAppService);
   private readonly dockAnimationService = inject(DockAnimationService);
+  private readonly analyticsService = inject(AnalyticsService);
 
   protected readonly dockItems = signal<ReadonlyArray<DockItem>>([]);
   protected readonly animations = signal<ReadonlyArray<{ appId: string; scale: number; bounce: number }>>([]);
@@ -93,11 +96,31 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
 
     if (appId === AppID.CV) {
       await this.handleCVDownload();
+      this.analyticsService.trackUserInteraction(AnalyticsEvent.CV_DOWNLOADED);
     } else if (appId === AppID.Youtube) {
-      window.open('https://www.youtube.com/@TheMarkBrut', '_blank');
+      this.openYoutubeChannel();
     } else {
       this.openAppService.openApp(appId);
       this.appOpened.emit(appId);
+      this.trackAppOpened(appId);
+    }
+  }
+
+  private openYoutubeChannel(): void {
+    window.open('https://www.youtube.com/@AlexanderKudryashov', '_blank');
+    this.analyticsService.trackUserInteraction(AnalyticsEvent.YOUTUBE_CHANNEL_OPENED);
+  }
+
+  private trackAppOpened(appId: AppID): void {
+    if (appId) {
+      const pageName = Object.entries(AppID)
+        .find(([_, value]) => value === appId)?.[0]
+        ?.replace(/([A-Z])/g, '_$1')
+        .toUpperCase()
+        .substring(1); // Remove leading underscore
+      if (pageName) {
+        this.analyticsService.trackUserInteraction(`${pageName}_PAGE_VIEWED`);
+      }
     }
   }
 

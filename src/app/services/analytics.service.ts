@@ -1,5 +1,5 @@
-import { Injectable, inject } from '@angular/core';
-import { AnalyticsCategory, AnalyticsAction, AnalyticsLabel, AnalyticsEvent } from '../constants/analytics.constants';
+import { Injectable } from '@angular/core';
+import { AnalyticsEvent, AnalyticsEventData } from '../constants/analytics.constants';
 
 declare global {
   interface Window {
@@ -15,53 +15,28 @@ declare global {
   providedIn: 'root'
 })
 export class AnalyticsService {
-  private sendEvent(event: AnalyticsEvent): void {
+  private isProd = false;
+
+  private sendEvent(eventData: AnalyticsEventData): void {
+    if (!this.isProd) {
+      console.log(
+        '%cAnalytics Event 📊', 
+        'background: #1a73e8; color: white; padding: 2px 5px; border-radius: 3px;',
+        '\nEvent:', eventData.event,
+        eventData.metadata ? '\nMetadata:' + JSON.stringify(eventData.metadata, null, 2) : '',
+        eventData.value ? '\nValue: ' + eventData.value : ''
+      );
+    }
+
     if (typeof window.gtag !== 'undefined') {
-      window.gtag('event', event.action, {
-        event_category: event.category,
-        event_label: event.label,
-        value: event.value
+      window.gtag('event', eventData.event, {
+        ...eventData.metadata,
+        value: eventData.value
       });
     }
   }
 
-  trackMenuItemSelect(label: string): void {
-    this.sendEvent({
-      category: AnalyticsCategory.MENU,
-      action: AnalyticsAction.MENU_ITEM_SELECT,
-      label
-    });
-  }
-
-  trackMenuOpen(label: string): void {
-    this.sendEvent({
-      category: AnalyticsCategory.MENU,
-      action: AnalyticsAction.MENU_OPEN,
-      label
-    });
-  }
-
-  trackDockAction(action: AnalyticsAction, label: AnalyticsLabel): void {
-    this.sendEvent({
-      category: AnalyticsCategory.DOCK,
-      action,
-      label
-    });
-  }
-
-  trackSourceCodeView(label: string = AnalyticsLabel.GITHUB_REPOSITORY): void {
-    this.sendEvent({
-      category: AnalyticsCategory.SOURCE_CODE,
-      action: AnalyticsAction.VIEW_SOURCE,
-      label
-    });
-  }
-
-  trackDownload(label: string): void {
-    this.sendEvent({
-      category: AnalyticsCategory.DOCUMENT,
-      action: AnalyticsAction.DOWNLOAD,
-      label
-    });
+  trackUserInteraction(event: AnalyticsEvent | string, metadata?: Record<string, any>, value?: number): void {
+    this.sendEvent({ event, metadata, value });
   }
 }

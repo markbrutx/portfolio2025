@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
-import { NgStyle } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { computed, signal } from '@angular/core';
 import { YEARS } from './constants/experience.constants';
 import { ExperienceService } from './services/experience.service';
@@ -9,8 +9,8 @@ import ExperienceCardComponent from './components/experience-card/experience-car
   selector: 'app-experience',
   standalone: true,
   imports: [
-    ExperienceCardComponent,
-    NgStyle
+    CommonModule,
+    ExperienceCardComponent
   ],
   templateUrl: './experience.component.html',
   styleUrls: ['./experience.component.scss'],

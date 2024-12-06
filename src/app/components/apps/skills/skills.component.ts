@@ -1,14 +1,14 @@
 import {
-  Component,
-  ChangeDetectionStrategy,
-  computed,
-  signal,
-  ViewChild,
-  ElementRef,
   AfterViewInit,
-  OnDestroy,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  PLATFORM_ID,
+  QueryList,
+  ViewChildren,
   inject,
-  PLATFORM_ID
+  signal,
+  computed
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 
@@ -31,9 +31,9 @@ const INTERSECTION_THRESHOLD = 0.1;
     '[class.is-scrolled]': 'isScrolled()'
   }
 })
-export class SkillsComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('skillsContainer', { static: true })
-  private readonly skillsContainer!: ElementRef<HTMLElement>;
+export class SkillsComponent implements AfterViewInit {
+  @ViewChildren('skillCard')
+  private readonly skillCards!: QueryList<ElementRef<HTMLElement>>;
 
   private readonly platformId = inject(PLATFORM_ID);
   private readonly observer = signal<IntersectionObserver | null>(null);
@@ -65,10 +65,6 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    this.observer()?.disconnect();
-  }
-
   private getExperienceLevel(years: number): ExperienceLevel {
     if (years >= EXPERIENCE_THRESHOLDS.Expert) return ExperienceLevel.Expert;
     if (years >= EXPERIENCE_THRESHOLDS.Advanced) return ExperienceLevel.Advanced;
@@ -93,8 +89,6 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
   private observeSkillCards(): void {
     if (!this.observer()) return;
 
-    this.skillsContainer.nativeElement
-      .querySelectorAll('.skill-card')
-      .forEach(card => this.observer()?.observe(card));
+    this.skillCards.forEach(card => this.observer()?.observe(card.nativeElement));
   }
 }

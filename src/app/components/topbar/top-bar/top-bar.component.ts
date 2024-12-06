@@ -12,6 +12,7 @@ import { OpenAppService } from '../../../services/open-app.service';
 import { ClockComponent } from '../clock/clock.component';
 import { FileDownloadService } from '../../../services/file-download.service';
 import { AnalyticsService } from '../../../services/analytics.service';
+import { AnalyticsEvent } from '../../../constants/analytics.constants';
 
 @Component({
   selector: 'app-top-bar',
@@ -36,11 +37,14 @@ export class TopBarComponent {
     helpMenu(this.fileDownloadService, this.analyticsService)
   );
 
-  onMenuItemSelect(item: MenuItem): void {
-    this.analyticsService.trackMenuItemSelect(item.label);
+  onMenuItemClick(item: MenuItem): void {
+    if (item.action) {
+      item.action();
+    }
+    this.analyticsService.trackUserInteraction(AnalyticsEvent.USER_ENGAGED, { itemLabel: item.label });
   }
 
-  viewSource(): void {
-    this.analyticsService.trackSourceCodeView();
+  onSourceCodeClick(): void {
+    this.analyticsService.trackUserInteraction(AnalyticsEvent.SOURCE_CODE_VIEWED);
   }
 }

@@ -1,4 +1,6 @@
-import { Component, TrackByFunction } from '@angular/core';
+import { Component, TrackByFunction, inject } from '@angular/core';
+import { AnalyticsService } from '../../../services/analytics.service';
+import { AnalyticsEvent } from '../../../constants/analytics.constants';
 
 interface ProjectStat {
   icon: string;
@@ -24,6 +26,7 @@ interface Project {
 })
 export class ProjectsComponent {
   activeProject: string | null = null;
+  private readonly analyticsService = inject(AnalyticsService);
 
   projectsNote = `Please note: While these projects effectively solve real problems 
     and have potential for wider use as startups, they are currently maintained as personal solutions 
@@ -122,8 +125,18 @@ export class ProjectsComponent {
 
   trackProject: TrackByFunction<Project> = (index: number, project: Project) => project.id;
 
-  setActiveProject(projectId: string) {
-    this.activeProject = this.activeProject === projectId ? null : projectId;
+  setActiveProject(projectId: string | null): void {
+    this.activeProject = projectId;
+    if (projectId) {
+      this.analyticsService.trackUserInteraction(AnalyticsEvent.PROJECT_OPENED, { projectId });
+    }
+  }
+
+  watchVideo(projectId: string, videoUrl: string): void {
+    this.analyticsService.trackUserInteraction(AnalyticsEvent.PROJECT_VIDEO_WATCHED, { 
+      projectId,
+      videoUrl 
+    });
   }
 
   isProjectActive(projectId: string): boolean {

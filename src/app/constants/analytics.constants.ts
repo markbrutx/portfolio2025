@@ -1,55 +1,34 @@
-export enum AnalyticsCategory {
-  DOCK = 'dock',
-  WINDOW = 'window',
-  NAVIGATION = 'navigation',
-  INTERACTION = 'interaction',
-  DOCUMENT = 'document',
-  MENU = 'menu',
-  TOP_BAR = 'top_bar',
-  USER_ENGAGEMENT = 'user_engagement',
-  SOURCE_CODE = 'source_code'
+export enum AnalyticsEvent {
+  // Page Views
+  PAGE_VIEWED = 'PAGE_VIEWED',
+
+  // User Actions
+  CV_DOWNLOADED = 'CV_DOWNLOADED',
+  PROJECT_OPENED = 'PROJECT_OPENED',
+  PROJECT_VIDEO_WATCHED = 'PROJECT_VIDEO_WATCHED',
+  GITHUB_LINK_CLICKED = 'GITHUB_LINK_CLICKED',
+  SOURCE_CODE_VIEWED = 'SOURCE_CODE_VIEWED',
+  YOUTUBE_CHANNEL_OPENED = 'YOUTUBE_CHANNEL_OPENED',
+  SOCIAL_LINK_CLICKED = 'SOCIAL_LINK_CLICKED',
+
+  // Window Actions
+  WINDOW_MINIMIZED = 'WINDOW_MINIMIZED',
+  WINDOW_MAXIMIZED = 'WINDOW_MAXIMIZED',
+  WINDOW_CLOSED = 'WINDOW_CLOSED',
+
+  // Menu Actions
+  CONTEXT_MENU_OPENED = 'CONTEXT_MENU_OPENED',
+  FINDER_OPENED = 'FINDER_OPENED',
+
+  // Engagement
+  SESSION_STARTED = 'SESSION_STARTED',
+  FIRST_VISIT = 'FIRST_VISIT',
+  PAGE_SCROLLED = 'PAGE_SCROLLED',
+  USER_ENGAGED = 'USER_ENGAGED'
 }
 
-export enum AnalyticsAction {
-  CLICK = 'click',
-  OPEN = 'open',
-  CLOSE = 'close',
-  MINIMIZE = 'minimize',
-  MAXIMIZE = 'maximize',
-  DRAG = 'drag',
-  DOWNLOAD = 'download',
-  VIEW_START = 'view_start',
-  VIEW_END = 'view_end',
-  MENU_OPEN = 'menu_open',
-  MENU_ITEM_SELECT = 'menu_item_select',
-  WINDOW_ACTION = 'window_action',
-  VIEW_SOURCE = 'view_source'
-}
-
-export enum AnalyticsLabel {
-  // Dock labels
-  HOME = 'home',
-  ABOUT = 'about',
-  RESUME = 'resume',
-  PROJECTS = 'projects',
-  CONTACT = 'contact',
-  BLOG = 'blog',
-  
-  // Source code labels
-  GITHUB_REPOSITORY = 'github_repository',
-  
-  // Menu labels
-  FINDER = 'finder',
-  CONTEXT_MENU = 'context_menu',
-  
-  // Window labels
-  MAIN_WINDOW = 'main_window',
-  MODAL = 'modal'
-}
-
-export interface AnalyticsEvent {
-  category: AnalyticsCategory;
-  action: AnalyticsAction;
-  label?: AnalyticsLabel | string;
+export interface AnalyticsEventData {
+  event: AnalyticsEvent | string;
+  metadata?: Record<string, any>;
   value?: number;
 }
