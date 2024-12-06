@@ -15,7 +15,7 @@ declare global {
   providedIn: 'root'
 })
 export class AnalyticsService {
-  private isProd = false;
+  private isProd = true;
 
   private sendEvent(eventData: AnalyticsEventData): void {
     if (!this.isProd) {
