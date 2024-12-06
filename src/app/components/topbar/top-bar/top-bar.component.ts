@@ -41,7 +41,29 @@ export class TopBarComponent {
     if (item.action) {
       item.action();
     }
-    this.analyticsService.trackUserInteraction(AnalyticsEvent.USER_ENGAGED, { itemLabel: item.label });
+
+    let analyticsEvent: AnalyticsEvent;
+    switch (item.label) {
+      case 'View Source':
+        analyticsEvent = AnalyticsEvent.MENU_SOURCE_CODE_CLICKED;
+        break;
+      case 'GitHub':
+        analyticsEvent = AnalyticsEvent.MENU_GITHUB_CLICKED;
+        break;
+      case 'YouTube':
+        analyticsEvent = AnalyticsEvent.MENU_YOUTUBE_CLICKED;
+        break;
+      case 'Download CV':
+        analyticsEvent = AnalyticsEvent.MENU_CV_CLICKED;
+        break;
+      case 'Finder':
+        analyticsEvent = AnalyticsEvent.MENU_FINDER_CLICKED;
+        break;
+      default:
+        return; 
+    }
+
+    this.analyticsService.trackUserInteraction(analyticsEvent);
   }
 
   onSourceCodeClick(): void {

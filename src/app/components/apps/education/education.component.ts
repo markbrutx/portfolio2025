@@ -2,8 +2,11 @@ import {
   Component,
   ChangeDetectionStrategy,
   signal,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AnalyticsService } from '../../../services/analytics.service';
+import { AnalyticsEvent } from '../../../constants/analytics.constants';
 
 interface Achievement {
   metric: string;
@@ -27,6 +30,7 @@ interface Achievement {
 export class EducationComponent {
   activeCard = signal<number | null>(null);
   selectedImage = signal<Achievement | null>(null);
+  private readonly analyticsService = inject(AnalyticsService);
 
   mainAchievements: Achievement[] = [
     {
@@ -74,7 +78,23 @@ export class EducationComponent {
   ];
 
   setActiveCard(index: number | null): void {
-    this.activeCard.set(index === this.activeCard() ? null : index);
+    const newState = index === this.activeCard() ? null : index;
+    this.activeCard.set(newState);
+    
+    if (newState !== null) {
+      this.analyticsService.trackUserInteraction(
+        AnalyticsEvent.EDUCATION_DETAILS_EXPANDED,
+        { achievementType: this.mainAchievements[newState].metric }
+      );
+    } else {
+      const currentCard = this.activeCard();
+      if (currentCard !== null) {
+        this.analyticsService.trackUserInteraction(
+          AnalyticsEvent.EDUCATION_DETAILS_COLLAPSED,
+          { achievementType: this.mainAchievements[currentCard].metric }
+        );
+      }
+    }
   }
 
   setSelectedImage(achievement: Achievement | null): void {

@@ -126,9 +126,19 @@ export class ProjectsComponent {
   trackProject: TrackByFunction<Project> = (index: number, project: Project) => project.id;
 
   setActiveProject(projectId: string | null): void {
-    this.activeProject = projectId;
-    if (projectId) {
-      this.analyticsService.trackUserInteraction(AnalyticsEvent.PROJECT_OPENED, { projectId });
+    const wasActive = this.activeProject === projectId;
+    this.activeProject = wasActive ? null : projectId;
+    
+    if (this.activeProject) {
+      this.analyticsService.trackUserInteraction(
+        AnalyticsEvent.PROJECT_DETAILS_EXPANDED, 
+        { projectId: this.activeProject }
+      );
+    } else if (!wasActive) {
+      this.analyticsService.trackUserInteraction(
+        AnalyticsEvent.PROJECT_DETAILS_COLLAPSED, 
+        { projectId }
+      );
     }
   }
 

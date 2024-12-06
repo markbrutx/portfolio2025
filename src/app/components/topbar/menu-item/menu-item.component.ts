@@ -5,6 +5,7 @@ import {
   ElementRef,
   inject,
   input,
+  output,
   signal,
 } from '@angular/core';
 import { MenuStateService } from '../../../state/menu-state.service';
@@ -32,6 +33,7 @@ export class MenuItemComponent {
   readonly menuItems = input<MenuItem[]>([]);
   readonly isAppleMenu = input(false);
   readonly isMenuOpen = computed(() => this.isMouseInside());
+  readonly itemClick = output<MenuItem>();
 
   protected closeMenu(): void {
     this.isMouseInside.set(false);
@@ -66,6 +68,12 @@ export class MenuItemComponent {
 
   protected onMenuLeave(event: MouseEvent): void {
     this.handleMouseMove(event);
+  }
+
+  handleItemClick(event: Event, item: MenuItem): void {
+    event.stopPropagation();
+    this.itemClick.emit({ ...item });
+    this.closeMenu();
   }
 
   private isInsideElement(element: HTMLElement, event: MouseEvent): boolean {

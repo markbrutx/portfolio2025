@@ -5,7 +5,8 @@
   <app-menu-item 
     class="apple" 
     [menuItems]="appleMenuItems()" 
-    [isAppleMenu]="true">
+    [isAppleMenu]="true"
+    (itemClick)="onMenuItemClick($event)">
     <img 
       src="assets/icons/apple.svg" 
       alt="Apple menu" 
@@ -15,16 +16,18 @@
   
   <app-menu-item 
     class="finder" 
-    [menuItems]="finderMenuItems()">
+    [menuItems]="finderMenuItems()"
+    (itemClick)="onMenuItemClick($event)">
     <span class="finder-text">Finder</span>
   </app-menu-item>
   
   <app-menu-item 
     class="help" 
-    [menuItems]="helpMenuItems()">
-    Help
+    [menuItems]="helpMenuItems()"
+    (itemClick)="onMenuItemClick($event)">
+    <span class="help-text">Help</span>
   </app-menu-item>
-  
+
   <div 
     class="spacer" 
     role="separator" 
