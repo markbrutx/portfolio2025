@@ -107,7 +107,7 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   }
 
   private openYoutubeChannel(): void {
-    window.open('https://www.youtube.com/@AlexanderKudryashov', '_blank');
+    window.open('https://www.youtube.com/@TheMarkBrut', '_blank');
     this.analyticsService.trackUserInteraction(AnalyticsEvent.YOUTUBE_CHANNEL_OPENED);
   }
 

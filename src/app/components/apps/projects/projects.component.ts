@@ -120,7 +120,7 @@ export class ProjectsComponent {
       videoUrl: 'https://youtu.be/9cDuM8aH5Lw',
       videoTitle: 'Watch short demo of ApplicationTracker'
     },
-    
+
   ];
 
   trackProject: TrackByFunction<Project> = (index: number, project: Project) => project.id;
@@ -128,24 +128,24 @@ export class ProjectsComponent {
   setActiveProject(projectId: string | null): void {
     const wasActive = this.activeProject === projectId;
     this.activeProject = wasActive ? null : projectId;
-    
+
     if (this.activeProject) {
       this.analyticsService.trackUserInteraction(
-        AnalyticsEvent.PROJECT_DETAILS_EXPANDED, 
+        AnalyticsEvent.PROJECT_DETAILS_EXPANDED,
         { projectId: this.activeProject }
       );
     } else if (!wasActive) {
       this.analyticsService.trackUserInteraction(
-        AnalyticsEvent.PROJECT_DETAILS_COLLAPSED, 
+        AnalyticsEvent.PROJECT_DETAILS_COLLAPSED,
         { projectId }
       );
     }
   }
 
   watchVideo(projectId: string, videoUrl: string): void {
-    this.analyticsService.trackUserInteraction(AnalyticsEvent.PROJECT_VIDEO_WATCHED, { 
+    this.analyticsService.trackUserInteraction(AnalyticsEvent.PROJECT_VIDEO_WATCHED, {
       projectId,
-      videoUrl 
+      videoUrl
     });
   }
 

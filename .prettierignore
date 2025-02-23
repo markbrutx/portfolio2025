@@ -2,3 +2,10 @@ node_modules
 dist
 server
 *.config.js
+src/**/*.*
+**/*.ts
+**/*.js
+**/*.json
+**/*.html
+**/*.css
+**/*.scss
