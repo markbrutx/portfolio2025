@@ -21,12 +21,20 @@ export class ContactsService {
       link: 'mailto:quintbrut@gmail.com'
     },
     {
+      id: 'whatsapp',
+      icon: 'assets/icons/whatsapp-logo.svg',
+      label: 'WhatsApp',
+      value: '+44 7441 423837',
+      link: 'https://wa.me/447441423837'
+    },
+    {
       id: 'telegram',
       icon: 'assets/icons/telegram-logo.svg',
       label: 'Telegram',
       value: '@quintbrut',
       link: 'https://t.me/quintbrut'
     },
+ 
     {
       id: 'instagram',
       icon: 'assets/icons/instagram-logo.svg',
@@ -45,8 +53,8 @@ export class ContactsService {
       id: 'phone',
       icon: 'assets/icons/phone.svg',
       label: 'Phone',
-      value: '+7 700 360 7725',
-      link: 'tel:+77003607725'
+      value: '+44 7441 423837',
+      link: 'tel:+447441423837'
     }
   ];
 

@@ -6,6 +6,7 @@ export enum AppID {
   Projects = 'projects',
   Skills = 'skills',
   Education = 'education',
+  Whatsapp = 'whatsapp',
   Youtube = 'youtube',
   Contacts = 'contacts',
 }

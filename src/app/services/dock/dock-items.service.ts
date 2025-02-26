@@ -20,6 +20,7 @@ export class DockItemsService {
           ...item,
           isActive: item.appId === AppID.Home || 
                    item.appId === AppID.Youtube || 
+                   item.appId === AppID.Whatsapp ||
                    item.appId === AppID.CV ||
                    openApps.some(app => app.id === item.appId && app.isOpen)
         }));
@@ -38,6 +39,7 @@ export class DockItemsService {
       { iconSrc: 'assets/icons/books.png', label: 'Education', scale: 1, bounce: 0, appId: AppID.Education, isActive: false },
       { iconSrc: 'assets/icons/cmd.png', label: 'Projects', scale: 1, bounce: 0, appId: AppID.Projects, isActive: false },
       { iconSrc: 'assets/icons/mail.png', label: 'Contacts', scale: 1, bounce: 0, appId: AppID.Contacts, isActive: false },
+      { iconSrc: 'assets/icons/whatsapp.png', label: 'Chat on WhatsApp', scale: 1, bounce: 0, appId: AppID.Whatsapp, isActive: true },
       { iconSrc: 'assets/icons/yt.png', label: 'My Youtube Channel', scale: 1, bounce: 0, appId: AppID.Youtube, isActive: true },
       { iconSrc: 'assets/icons/pages.png', label: 'Download CV', scale: 1, bounce: 0, appId: AppID.CV, isActive: true },
     ];

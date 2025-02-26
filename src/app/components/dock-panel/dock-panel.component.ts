@@ -9,7 +9,7 @@ import {
   output,
   OnDestroy,
 } from '@angular/core';
-import { isPlatformBrowser, NgFor, NgIf } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { DockItemComponent } from '../dock-item/dock-item.component';
 import { FileDownloadService } from '../../services/file-download.service';
 import { AppID } from '../../shared/app-id.enum';
@@ -77,7 +77,7 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   }
 
   protected shouldShowDivider(index: number): boolean {
-    return index === 0 || index === this.dockItems().length - 3;
+    return index === 0 || index === this.dockItems().length - 4;
   }
 
   ngAfterViewInit(): void {
@@ -99,6 +99,8 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
       this.analyticsService.trackUserInteraction(AnalyticsEvent.CV_DOWNLOADED);
     } else if (appId === AppID.Youtube) {
       this.openYoutubeChannel();
+    } else if (appId === AppID.Whatsapp) {
+      this.openWhatsappChat();
     } else {
       this.openAppService.openApp(appId);
       this.appOpened.emit(appId);
@@ -109,6 +111,11 @@ export class DockPanelComponent implements AfterViewInit, OnDestroy {
   private openYoutubeChannel(): void {
     window.open('https://www.youtube.com/@TheMarkBrut', '_blank');
     this.analyticsService.trackUserInteraction(AnalyticsEvent.YOUTUBE_CHANNEL_OPENED);
+  }
+
+  private openWhatsappChat(): void {
+    window.open('https://wa.me/447441423837', '_blank');
+    this.analyticsService.trackUserInteraction(AnalyticsEvent.WHATSAPP_CHAT_OPENED);
   }
 
   private trackAppOpened(appId: AppID): void {
